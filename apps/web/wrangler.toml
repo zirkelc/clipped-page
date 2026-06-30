@@ -1,0 +1,27 @@
+name = "clipped-page"
+main = "src/worker.tsx"
+compatibility_date = "2025-01-15"
+compatibility_flags = ["nodejs_compat"]
+
+# Custom domain. Requires `clipped.page` to be on this Cloudflare account as a
+# zone — wrangler will create the route + DNS automatically on deploy.
+[[routes]]
+pattern = "clipped.page"
+custom_domain = true
+
+[[routes]]
+pattern = "www.clipped.page"
+custom_domain = true
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+[[analytics_engine_datasets]]
+binding = "ANALYTICS"
+dataset = "clipped_page_requests"
+
+[vars]
+# Set via `wrangler secret put CF_BEACON_TOKEN` for production, or override here for dev.
+# Empty string disables the beacon (HTML responses won't embed the Web Analytics script).
+CF_BEACON_TOKEN = ""

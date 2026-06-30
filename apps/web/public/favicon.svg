@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter">
+  <style>
+    :root { color: #111; }
+    @media (prefers-color-scheme: dark) { :root { color: #e6e6e6; } }
+  </style>
+  <path stroke="currentColor" d="M5 3 H20 L28 11 V29 H5 Z"/>
+  <path stroke="currentColor" d="M20 3 V11 H28"/>
+</svg>
