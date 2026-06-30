@@ -2,8 +2,6 @@
 
 Clip an X (Twitter) post and share it as a single URL whose query string contains the entire post. Anyone (or any AI) opening the link receives the post's text, author, images, videos, and timestamp without needing X API access.
 
-The iOS/macOS share extensions live in a separate repo (`~/Developer/share-x-ios`) and keep the legacy `share-x` naming.
-
 ## Layout
 
 ```

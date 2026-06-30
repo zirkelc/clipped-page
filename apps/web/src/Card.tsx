@@ -337,7 +337,7 @@ export function Landing() {
 
         <footer className="mt-8 pt-4 text-xs opacity-50 flex flex-wrap items-center justify-between gap-2" style={{ borderTop: '1px dashed currentColor' }}>
           <span>Made for AIs. Works for humans.</span>
-          <a href="https://github.com/zirkelc/share-x" className="underline decoration-dotted hover:opacity-100">
+          <a href="https://github.com/zirkelc/clipped-page" className="underline decoration-dotted hover:opacity-100">
             source →
           </a>
         </footer>
