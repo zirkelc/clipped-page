@@ -18,4 +18,4 @@ export { encode, decode, DecodeError } from './codec.js';
 export { toMarkdown } from './format.js';
 export { formatCount, parseCount } from './count.js';
 export { buildShareUrl, parseShareUrl, SHARE_URL_VERSION, type ParsedShareUrl, type ShareUrlInput } from './url.js';
-export { buildShareFields, DEFAULT_SHARE_MODE, isShareMode, type ShareMode } from './share.js';
+export { buildShareFields } from './share.js';

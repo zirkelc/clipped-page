@@ -382,21 +382,6 @@ function extractVideos(article: HTMLElement, excludeIn?: HTMLElement | null): Ar
 }
 
 /**
- * Find the rendered tweet whose permalink ends in `/status/<id>`. Used by the
- * native-share interceptor to locate the post X is about to share.
- */
-export function findArticleByStatusId(id: string): HTMLElement | null {
-  const root = document.querySelector('[data-testid="primaryColumn"]') ?? document;
-  const articles = Array.from(root.querySelectorAll('article[data-testid="tweet"]')) as Array<HTMLElement>;
-  for (const a of articles) {
-    const time = a.querySelector('time[datetime]');
-    const href = (time?.closest('a') as HTMLAnchorElement | null)?.getAttribute('href') ?? '';
-    if (href.endsWith('/status/' + id)) return a;
-  }
-  return null;
-}
-
-/**
  * On a tweet permalink page, returns the focal article (the one whose status id
  * matches the URL). On other pages, returns the topmost tweet currently in viewport.
  */
