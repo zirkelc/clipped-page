@@ -1,8 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
   <style>
     :root { color: #111; }
     @media (prefers-color-scheme: dark) { :root { color: #e6e6e6; } }
   </style>
-  <path stroke="currentColor" d="M5 3 H20 L28 11 V29 H5 Z"/>
-  <path stroke="currentColor" d="M20 3 V11 H28"/>
+  <g stroke="currentColor">
+    <circle cx="9" cy="23" r="3.5"/>
+    <circle cx="23" cy="23" r="3.5"/>
+    <path d="M20.5 20.5 L18.3 18.3"/>
+    <path d="M13.7 13.7 L5 5"/>
+    <path d="M11.5 20.5 L27 5"/>
+  </g>
 </svg>

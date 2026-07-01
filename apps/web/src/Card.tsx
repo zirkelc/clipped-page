@@ -1,5 +1,32 @@
 import { buildShareFields, formatCount, type Payload, type Post, type Video } from '@clipped-page/shared';
 
+/**
+ * The brand mark: an open pair of scissors (clip = cut out).
+ * Inherits the current text color so it themes with light/dark backgrounds.
+ */
+function LogoMark({ size = 32, className }: { size?: number; className?: string }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 32 32"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <circle cx="9" cy="23" r="3.5" />
+      <circle cx="23" cy="23" r="3.5" />
+      <path d="M20.5 20.5 L18.3 18.3" />
+      <path d="M13.7 13.7 L5 5" />
+      <path d="M11.5 20.5 L27 5" />
+    </svg>
+  );
+}
+
 type Props = {
   payload: Payload;
   src: string;
@@ -267,9 +294,10 @@ const EXAMPLES: Array<{ label: string; url: string }> = [
 
 export function Landing() {
   return (
-    <main className="min-h-screen flex items-center justify-center p-6 font-mono">
+    <main className="cursor-scissors min-h-screen flex items-center justify-center p-6 font-mono">
       <article className="w-full max-w-[720px] p-8 leading-relaxed" style={{ border: '4px double currentColor' }}>
         <header>
+          <LogoMark size={40} className="mb-3" />
           <h1 className="text-2xl mb-1">clipped<span className="opacity-50">.page</span></h1>
           <p className="opacity-70 text-sm">Clip a post. Get a self-contained URL.</p>
         </header>
