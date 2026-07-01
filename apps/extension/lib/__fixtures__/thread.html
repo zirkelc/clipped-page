@@ -1,0 +1,37 @@
+<!-- X DOM pattern: a permalink page. The focal (top-level) post is followed by
+     same-author continuations (a thread); the walk stops at the first
+     different-author article. Extraction only walks forward on permalink pages. -->
+<div data-testid="primaryColumn">
+  <article data-testid="tweet">
+    <div data-testid="User-Name">
+      <a href="/theo" role="link"><span><span>Theo - t3.gg</span></span></a>
+      <a href="/theo" role="link" tabindex="-1"><span>@theo</span></a>
+    </div>
+    <a href="/theo/status/2000000000000000001" role="link" aria-label="1"><time datetime="2026-06-01T10:00:00.000Z">1</time></a>
+    <div data-testid="tweetText"><span>Thread part 1</span></div>
+  </article>
+  <article data-testid="tweet">
+    <div data-testid="User-Name">
+      <a href="/theo" role="link"><span><span>Theo - t3.gg</span></span></a>
+      <a href="/theo" role="link" tabindex="-1"><span>@theo</span></a>
+    </div>
+    <a href="/theo/status/2000000000000000002" role="link" aria-label="2"><time datetime="2026-06-01T10:01:00.000Z">2</time></a>
+    <div data-testid="tweetText"><span>Thread part 2</span></div>
+  </article>
+  <article data-testid="tweet">
+    <div data-testid="User-Name">
+      <a href="/theo" role="link"><span><span>Theo - t3.gg</span></span></a>
+      <a href="/theo" role="link" tabindex="-1"><span>@theo</span></a>
+    </div>
+    <a href="/theo/status/2000000000000000003" role="link" aria-label="3"><time datetime="2026-06-01T10:02:00.000Z">3</time></a>
+    <div data-testid="tweetText"><span>Thread part 3</span></div>
+  </article>
+  <article data-testid="tweet">
+    <div data-testid="User-Name">
+      <a href="/someoneelse" role="link"><span><span>Someone Else</span></span></a>
+      <a href="/someoneelse" role="link" tabindex="-1"><span>@someoneelse</span></a>
+    </div>
+    <a href="/someoneelse/status/2000000000000000004" role="link" aria-label="4"><time datetime="2026-06-01T10:05:00.000Z">4</time></a>
+    <div data-testid="tweetText"><span>Unrelated reply</span></div>
+  </article>
+</div>

@@ -1,0 +1,29 @@
+<!-- X DOM pattern: a post quoting another post that has a photo.
+     The quote lives in a [role="link"][tabindex="0"] block whose inline
+     User-Name has no handle anchor (handle read from the @span). The quoted
+     post's photo permalink anchor (/handle/status/id/photo/1) yields quote.url.
+     The outer post has no photo of its own, so its images must stay empty. -->
+<article data-testid="tweet">
+  <div data-testid="User-Name">
+    <a href="/replier" role="link"><span><span>Replier</span></span></a>
+    <a href="/replier" role="link" tabindex="-1"><span>@replier</span></a>
+  </div>
+  <a href="/replier/status/666555444333222111" role="link" aria-label="10:00 AM · Jun 1, 2026">
+    <time datetime="2026-06-01T10:00:00.000Z">Jun 1</time>
+  </a>
+  <div data-testid="tweetText"><span>Look at this!</span></div>
+  <div role="link" tabindex="0">
+    <div data-testid="User-Name">
+      <div><span><span>Orig Author</span></span></div>
+      <div><span>@origauthor</span></div>
+      <div><time datetime="2026-05-31T09:00:00.000Z">May 31</time></div>
+    </div>
+    <div data-testid="tweetText"><span>Original post with a photo</span></div>
+    <a href="/origauthor/status/555444333222111000/photo/1" role="link">
+      <div data-testid="tweetPhoto"><img alt="Image" src="https://pbs.twimg.com/media/QQQ999?format=jpg&amp;name=small"></div>
+    </a>
+  </div>
+  <div role="group">
+    <button aria-label="12 Likes. Like" role="button" data-testid="like"><span data-testid="app-text-transition-container"><span><span>12</span></span></span></button>
+  </div>
+</article>

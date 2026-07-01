@@ -1,0 +1,18 @@
+<!-- X DOM pattern: post with multiple photos. Media URLs carry a `name`
+     size param that the extractor normalises to `name=large`. -->
+<article data-testid="tweet">
+  <div data-testid="User-Name">
+    <a href="/natgeo" role="link"><span><span>National Geographic</span></span></a>
+    <a href="/natgeo" role="link" tabindex="-1"><span>@natgeo</span></a>
+  </div>
+  <a href="/natgeo/status/1234567890123456789" role="link" aria-label="12:00 PM · May 1, 2026">
+    <time datetime="2026-05-01T12:00:00.000Z">May 1</time>
+  </a>
+  <div data-testid="tweetText"><span>Two shots from the trip.</span></div>
+  <div data-testid="tweetPhoto"><img alt="Image" src="https://pbs.twimg.com/media/AAA111?format=jpg&amp;name=small"></div>
+  <div data-testid="tweetPhoto"><img alt="Image" src="https://pbs.twimg.com/media/BBB222?format=jpg&amp;name=small"></div>
+  <div role="group">
+    <button aria-label="1234 Likes. Like" role="button" data-testid="like"><span data-testid="app-text-transition-container"><span><span>1.2K</span></span></span></button>
+    <a href="/natgeo/status/1234567890123456789/analytics" role="link"><span data-testid="app-text-transition-container"><span><span>50K</span></span></span><span><span>Views</span></span></a>
+  </div>
+</article>

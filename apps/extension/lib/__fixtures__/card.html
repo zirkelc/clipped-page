@@ -1,0 +1,21 @@
+<!-- X DOM pattern: link-preview card. The anchor's aria-label is
+     "<domain> <title>"; the card image carries a normalisable `name` param. -->
+<article data-testid="tweet">
+  <div data-testid="User-Name">
+    <a href="/verge" role="link"><span><span>The Verge</span></span></a>
+    <a href="/verge" role="link" tabindex="-1"><span>@verge</span></a>
+  </div>
+  <a href="/verge/status/2071000000000000000" role="link" aria-label="9:44 PM · Jun 28, 2026">
+    <time datetime="2026-06-28T21:44:06.000Z">Jun 28</time>
+  </a>
+  <div data-testid="tweetText"><span>Big news today:</span></div>
+  <div data-testid="card.wrapper">
+    <a href="https://t.co/abc123XYZ" role="link" aria-label="theverge.com Apple announces the new thing">
+      <img src="https://pbs.twimg.com/card_img/111/abc?format=jpg&amp;name=small">
+      <div><span>Apple announces the new thing</span></div>
+    </a>
+  </div>
+  <div role="group">
+    <button aria-label="500 Likes. Like" role="button" data-testid="like"><span data-testid="app-text-transition-container"><span><span>500</span></span></span></button>
+  </div>
+</article>

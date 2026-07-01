@@ -1,0 +1,28 @@
+<!-- Real X DOM pattern: video post (theo, status 2072165349139886490).
+     Emoji renders as <img alt>; the video lives in a tweetPhoto wrapper with a
+     <video poster> and no <img>, so it must extract as a video, not an image. -->
+<article data-testid="tweet">
+  <div data-testid="User-Name">
+    <a href="/theo" role="link"><span><span>Theo - t3.gg</span></span></a>
+    <a href="/theo" role="link" tabindex="-1"><span>@theo</span></a>
+  </div>
+  <a href="/theo/status/2072165349139886490" role="link" aria-label="5:48 AM · Jul 1, 2026">
+    <time datetime="2026-07-01T03:48:12.000Z">Jul 1</time>
+  </a>
+  <div data-testid="tweetText"><span>Big day for Claude fans! We now have Sonnet 5 and Fable is back tomorrow </span><img alt="🙏" src="https://abs.twimg.com/emoji/v2/svg/1f64f.svg"><span>
+
+I saw a lot of misunderstandings about Sonnet 5, so I rushed out a video to try and break it down.</span></div>
+  <div data-testid="tweetPhoto">
+    <div data-testid="videoPlayer">
+      <div data-testid="videoComponent">
+        <video tabindex="-1" aria-label="Embedded video" poster="https://pbs.twimg.com/amplify_video_thumb/2072164851032674304/img/5-hnkJCKvxfe6WCF.jpg"><source src="blob:https://x.com/989d9811-92dc-4ef6-bb07-9cf8993c238d"></video>
+      </div>
+    </div>
+  </div>
+  <div role="group">
+    <button aria-label="401 Likes. Like" role="button" data-testid="like"><span data-testid="app-text-transition-container"><span><span>401</span></span></span></button>
+    <button aria-label="14 reposts. Repost" role="button" data-testid="retweet"><span data-testid="app-text-transition-container"><span><span>14</span></span></span></button>
+    <button aria-label="84 Bookmarks. Bookmark" role="button" data-testid="bookmark"><span data-testid="app-text-transition-container"><span><span>84</span></span></span></button>
+    <a href="/theo/status/2072165349139886490/analytics" role="link"><span data-testid="app-text-transition-container"><span><span>28K</span></span></span><span><span>Views</span></span></a>
+  </div>
+</article>
