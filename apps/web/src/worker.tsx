@@ -9,7 +9,6 @@ import { track } from './analytics.js';
 type Bindings = {
   ASSETS: Fetcher;
   ANALYTICS?: AnalyticsEngineDataset;
-  CF_BEACON_TOKEN?: string;
 };
 
 type Format = 'html' | 'md' | 'json';
@@ -42,12 +41,11 @@ app.get('/', async (c) => {
   const url = new URL(c.req.url);
   const format = negotiate(c.req.raw, url);
   const ae = c.env.ANALYTICS;
-  const beaconToken = c.env.CF_BEACON_TOKEN || undefined;
 
   if (!url.searchParams.has('d')) {
     if (format === 'html') {
       const { response, bytes } = htmlResponse(
-        <PlainLayout title="clipped.page" beaconToken={beaconToken}><Landing /></PlainLayout>,
+        <PlainLayout title="clipped.page"><Landing /></PlainLayout>,
       );
       track(ae, { version: SHARE_URL_VERSION, format: 'landing', status: 200, request: c.req.raw, responseBytes: bytes });
       return response;
@@ -61,7 +59,7 @@ app.get('/', async (c) => {
   if (!parsed.ok) {
     if (format === 'html') {
       const { response, bytes } = htmlResponse(
-        <PlainLayout title="clipped.page · error" beaconToken={beaconToken}><ErrorPage message={parsed.error} /></PlainLayout>,
+        <PlainLayout title="clipped.page · error"><ErrorPage message={parsed.error} /></PlainLayout>,
         400,
       );
       track(ae, { version: SHARE_URL_VERSION, format: 'error', status: 400, request: c.req.raw, responseBytes: bytes });
@@ -89,7 +87,7 @@ app.get('/', async (c) => {
 
   const meta = buildMeta(payload, src);
   const { response, bytes } = htmlResponse(
-    <Layout meta={meta} beaconToken={beaconToken}><Card payload={payload} src={src} currentUrl={c.req.url} /></Layout>,
+    <Layout meta={meta}><Card payload={payload} src={src} currentUrl={c.req.url} /></Layout>,
   );
   track(ae, { version: SHARE_URL_VERSION, format: 'html', status: 200, sourceHost, request: c.req.raw, responseBytes: bytes });
   return response;

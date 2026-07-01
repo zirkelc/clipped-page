@@ -20,8 +20,3 @@ binding = "ASSETS"
 [[analytics_engine_datasets]]
 binding = "ANALYTICS"
 dataset = "clipped_page_requests"
-
-[vars]
-# Set via `wrangler secret put CF_BEACON_TOKEN` for production, or override here for dev.
-# Empty string disables the beacon (HTML responses won't embed the Web Analytics script).
-CF_BEACON_TOKEN = ""

@@ -27,11 +27,10 @@ export function buildMeta(payload: Payload, src: string): Meta {
 
 type LayoutProps = {
   meta: Meta;
-  beaconToken?: string;
   children: ReactNode;
 };
 
-export function Layout({ meta, beaconToken, children }: LayoutProps) {
+export function Layout({ meta, children }: LayoutProps) {
   return (
     <html lang="en">
       <head>
@@ -58,20 +57,8 @@ export function Layout({ meta, beaconToken, children }: LayoutProps) {
       <body>
         {children}
         <script dangerouslySetInnerHTML={{ __html: shareScript }} />
-        {beaconToken && <Beacon token={beaconToken} />}
       </body>
     </html>
-  );
-}
-
-function Beacon({ token }: { token: string }) {
-  /* Cloudflare Web Analytics. Token is the "Site Tag" from the dashboard. */
-  return (
-    <script
-      defer
-      src="https://static.cloudflareinsights.com/beacon.min.js"
-      data-cf-beacon={JSON.stringify({ token })}
-    />
   );
 }
 
@@ -92,7 +79,7 @@ if(share)share.addEventListener('click',async()=>{
 });
 })();`;
 
-export function PlainLayout({ title, beaconToken, children }: { title: string; beaconToken?: string; children: ReactNode }) {
+export function PlainLayout({ title, children }: { title: string; children: ReactNode }) {
   return (
     <html lang="en">
       <head>
@@ -104,7 +91,6 @@ export function PlainLayout({ title, beaconToken, children }: { title: string; b
       </head>
       <body>
         {children}
-        {beaconToken && <Beacon token={beaconToken} />}
       </body>
     </html>
   );
