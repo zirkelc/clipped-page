@@ -9,10 +9,32 @@
     background: #0b0b0b;
     color: #e6e6e6;
   }
+  /* Inverted, terminal-style selection: highlight is the text color, text
+     becomes the background color. */
+  ::selection {
+    background: #e6e6e6;
+    color: #0b0b0b;
+  }
   @media (prefers-color-scheme: light) {
     html, body {
       background: #f5f5f5;
       color: #111;
     }
+    ::selection {
+      background: #111;
+      color: #f5f5f5;
+    }
   }
+}
+
+/* Scissors cursor for the landing page (white halo keeps it visible on either
+   theme; hotspot sits where the blades cross). Interactive elements keep the
+   normal pointer. */
+.cursor-scissors {
+  cursor: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2232%22%20height=%2232%22%20viewBox=%220%200%2032%2032%22%20fill=%22none%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cg%20stroke=%22%23fff%22%20stroke-width=%225%22%3E%3Ccircle%20cx=%229%22%20cy=%2223%22%20r=%223.5%22/%3E%3Ccircle%20cx=%2223%22%20cy=%2223%22%20r=%223.5%22/%3E%3Cpath%20d=%22M20.5%2020.5%20L18.3%2018.3%22/%3E%3Cpath%20d=%22M13.7%2013.7%20L5%205%22/%3E%3Cpath%20d=%22M11.5%2020.5%20L27%205%22/%3E%3C/g%3E%3Cg%20stroke=%22%23111%22%20stroke-width=%222.5%22%3E%3Ccircle%20cx=%229%22%20cy=%2223%22%20r=%223.5%22/%3E%3Ccircle%20cx=%2223%22%20cy=%2223%22%20r=%223.5%22/%3E%3Cpath%20d=%22M20.5%2020.5%20L18.3%2018.3%22/%3E%3Cpath%20d=%22M13.7%2013.7%20L5%205%22/%3E%3Cpath%20d=%22M11.5%2020.5%20L27%205%22/%3E%3C/g%3E%3C/svg%3E") 16 14, auto;
+}
+.cursor-scissors a,
+.cursor-scissors button,
+.cursor-scissors [role="button"] {
+  cursor: pointer;
 }
