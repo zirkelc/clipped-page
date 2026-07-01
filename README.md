@@ -22,8 +22,8 @@ clipped.page inverts that. Instead of pointing at the post, the link *carries* t
  │ ✂️ on each post   │                  │  parse URL → validate         │
  │  → scrape DOM     │   the link is    │  → render by content type:    │
  │  → build Payload  │   the transport  │     • HTML card (browsers)    │
- │  → gzip + base64  │ ───────────────► │     • JSON   (AIs / scripts)  │
- │  → open URL       │                  │     • Markdown (?f=md)         │
+ │  → gzip + base64  │ ───────────────► │     • JSON   (scripts)  │
+ │  → open URL       │                  │     • Markdown (AIs)         │
  └──────────────────┘                  │     • OG meta (unfurlers)     │
                                         └──────────────────────────────┘
 ```
@@ -54,7 +54,7 @@ The data parameter is built (and decoded in reverse) by a Zod codec pipeline:
 Payload  ──JSON──►  string  ──utf8──►  bytes  ──gzip──►  bytes  ──base64url──►  d param
 ```
 
-gzip is what makes a whole post (often with a quoted post inside it) fit in a URL. base64url keeps it URL-safe. The decoder is deliberately lenient at the edges: it trims trailing junk and takes the longest valid base64url prefix, because some OS share sheets append the post text or an emoji after the URL.
+gzip is what makes a whole post (often with a quoted post inside it) fit in a URL. base64url keeps it URL-safe.
 
 ### Payload schema
 
@@ -93,23 +93,52 @@ The same URL renders differently depending on how it's requested. Precedence: `?
 
 | `Accept` / `?f=`              | Response               | For                     |
 |-------------------------------|------------------------|-------------------------|
-| (default, browsers)           | `text/html` card       | Humans                  |
-| `application/json`, `?f=json` | `{ src, payload }` JSON | AIs, scripts, agents    |
+| `text/html`.                  | HTML                   | Humans, browsers        |
+| `application/json`, `?f=json` | JSON                   | AIs, scripts, agents    |
 | `text/markdown`, `?f=md`      | Markdown               | LLMs, note-taking       |
 | `text/plain`                  | Markdown               | Terminals, plain fetch  |
 
 HTML responses also embed Open Graph / Twitter Card meta tags, so pasting a clipped link into Slack, Discord, or iMessage produces a rich preview.
 
-## Quick start
+## Development
 
 ```sh
 pnpm install
 pnpm -F @clipped-page/shared test       # 28 tests
-pnpm -F @clipped-page/web dev           # worker on http://localhost:8787
-pnpm -F @clipped-page/extension dev     # then load apps/extension/.output/chrome-mv3 in chrome://extensions
 ```
 
-With both running, the extension's `✂️` buttons point at your local worker so you can iterate end to end.
+### Run the web renderer locally
+
+```sh
+pnpm -F @clipped-page/web dev           # worker on http://localhost:8787 (also watches Tailwind)
+```
+
+This runs the Cloudflare Worker locally with Wrangler. It does not deploy anything. Open `http://localhost:8787/` for the landing page, or paste a clipped link (swap the host for `localhost:8787`) to render a post.
+
+### Build the extension
+
+The extension's target URL is baked in at build time ([`apps/extension/lib/settings.ts`](apps/extension/lib/settings.ts)):
+
+```sh
+# Dev build — ✂️ buttons point at http://localhost:8787 (use with the worker above)
+pnpm -F @clipped-page/extension dev
+
+# Prod build — ✂️ buttons point at https://clipped.page
+pnpm -F @clipped-page/extension build
+```
+
+Either command writes the unpacked extension to `apps/extension/.output/chrome-mv3/`. `dev` also rebuilds on file changes.
+
+### Load the unpacked extension in Chrome
+
+Same steps for a dev or prod build (the only difference is which URL the buttons open):
+
+1. Go to `chrome://extensions`.
+2. Toggle **Developer mode** on (top-right).
+3. Click **Load unpacked** and select `apps/extension/.output/chrome-mv3/`.
+4. Open `x.com`, and the `✂️` button appears next to each post.
+
+After a rebuild, click the **reload** (↻) icon on the extension card in `chrome://extensions` to pick up the new build. For end-to-end dev, run the worker and the dev extension build together so the buttons open your local renderer.
 
 ## Layout
 
@@ -126,8 +155,7 @@ apps/
   extension/       Chrome extension (MV3, built with WXT)
     entrypoints/
       background.ts          Toolbar icon opens clipped.page; builds + opens clipped URLs
-      content.ts             Injects ✂️ next to each post (ISOLATED world)
-      intercept.content.ts   Patches navigator.share so X's native share is enhanced (MAIN world)
+      content.ts             Injects ✂️ next to each post
     lib/
       extract.ts             X DOM → Payload (text, media, card, quote, thread walking)
       settings.ts            DEFAULT_BASE_URL (localhost in dev, clipped.page in prod)
@@ -138,25 +166,12 @@ packages/
       payload.ts   Zod schemas (Author, Metrics, Card, Video, Quote, Post, Payload)
       codec.ts     base64url(gzip(utf8(JSON))) round-trip via a Zod codec pipeline
       url.ts       buildShareUrl / parseShareUrl, SHARE_URL_VERSION
-      share.ts     Share modes + title/text formatting for OS share sheets
+      share.ts     title/text formatting for the card's share button
       format.ts    toMarkdown
       count.ts     Parse / format X's human counts ("1.1K" ↔ 1100)
 ```
 
 Zod is kept out of the extension's content-world bundle for size; the shared package exposes lighter subpath entries for the bits the content script needs.
-
-## The extension, in two scripts
-
-- **`content.ts`** runs in the isolated world at `document_idle`. A `MutationObserver` injects the `✂️` button into each post's action bar as X lazily renders the timeline. Clicking it extracts the post and asks the background script to build and open the clipped URL.
-- **`intercept.content.ts`** runs in the page's MAIN world at `document_start` and monkey-patches `Navigator.prototype.share`. When X's own native share fires, it rewrites the share title/text to `@handle Name` + the post body before forwarding to the real `navigator.share`. It stays fully synchronous (no `await`) because building a clipped URL needs async gzip, and crossing an `await` would drop the user-activation that `navigator.share` requires.
-
-## Production deploy
-
-```sh
-pnpm -F @clipped-page/web run deploy
-```
-
-`apps/web/wrangler.toml` declares both `clipped.page` and `www.clipped.page` as custom-domain routes, so a deploy publishes both. Anonymous request analytics go to Cloudflare Analytics Engine.
 
 ## Non-goals
 
