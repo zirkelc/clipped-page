@@ -1,29 +1,5 @@
 import { buildShareFields, formatCount, type Payload, type Post, type Video } from '@clipped-page/shared';
 
-/**
- * The brand mark: a page with the top-right corner clipped off.
- * Inherits the current text color so it themes with light/dark backgrounds.
- */
-function LogoMark({ size = 32, className }: { size?: number; className?: string }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 32 32"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.5"
-      strokeLinecap="square"
-      strokeLinejoin="miter"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M5 3 H20 L28 11 V29 H5 Z" />
-      <path d="M20 3 V11 H28" />
-    </svg>
-  );
-}
-
 type Props = {
   payload: Payload;
   src: string;
@@ -293,12 +269,9 @@ export function Landing() {
   return (
     <main className="min-h-screen flex items-center justify-center p-6 font-mono">
       <article className="w-full max-w-[720px] p-8 leading-relaxed" style={{ border: '4px double currentColor' }}>
-        <header className="flex items-start gap-3">
-          <LogoMark className="shrink-0 mt-1" size={28} />
-          <div>
-            <h1 className="text-2xl mb-1">clipped<span className="opacity-50">.page</span></h1>
-            <p className="opacity-70 text-sm">Clip a post. Get a self-contained URL.</p>
-          </div>
+        <header>
+          <h1 className="text-2xl mb-1">clipped<span className="opacity-50">.page</span></h1>
+          <p className="opacity-70 text-sm">Clip a post. Get a self-contained URL.</p>
         </header>
 
         <section className="mt-8">
