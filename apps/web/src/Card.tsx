@@ -280,6 +280,15 @@ export function Card({ payload, src, currentUrl }: Props) {
   );
 }
 
+/**
+ * Clipped links to showcase on the landing page. Each `url` can be a relative
+ * clipped link (e.g. `/?v=1&s=...&d=...`) or an absolute one. The Examples
+ * section is hidden while this list is empty.
+ */
+const EXAMPLES: Array<{ label: string; url: string }> = [
+  // { label: 'Example post', url: '/?v=1&s=x.com/...&d=...' },
+];
+
 export function Landing() {
   return (
     <main className="min-h-screen flex items-center justify-center p-6 font-mono">
@@ -304,36 +313,59 @@ export function Landing() {
 
         <section className="mt-6">
           <h2 className="text-xs uppercase tracking-widest opacity-60 mb-3">Clip</h2>
-          <ul className="list-none p-0 m-0 text-sm opacity-80 space-y-2">
-            <li>
-              <span className="opacity-60">›</span> Install the Chrome extension and clip any post on{' '}
-              <a href="https://x.com" className="underline decoration-dotted hover:opacity-100">x.com</a>.
-            </li>
-            <li>
-              <span className="opacity-60">›</span> Or by hand:{' '}
-              <code className="text-xs">/?v=1&amp;s=&lt;source&gt;&amp;d=&lt;payload&gt;</code>
-            </li>
-          </ul>
+          <p className="opacity-80 text-sm mb-3">
+            The extension adds a <span aria-hidden="true">✂️</span> button to every post. One click
+            scrapes the post straight from the page, then builds the payload parameter that carries it:
+          </p>
+          <pre className="text-xs opacity-60 overflow-x-auto m-0 mb-4 p-0 bg-transparent">
+{`HTML ─scrape→ Post ─serialize→ JSON ─compress:gzip→ bytes ─encode:base64url→ string`}
+          </pre>
+          <p className="opacity-80 text-sm mb-3">
+            The link opens straight away. Nothing touches the X API, and nothing is stored. The link is the post.
+          </p>
+          <p className="text-sm opacity-80">
+            <span className="opacity-60">›</span>{' '}
+            <a
+              href="https://github.com/zirkelc/clipped-page"
+              className="underline decoration-dotted hover:opacity-100"
+            >
+              Install the Chrome extension →
+            </a>
+          </p>
         </section>
 
         <section className="mt-6">
           <h2 className="text-xs uppercase tracking-widest opacity-60 mb-3">Read</h2>
           <p className="opacity-80 text-sm mb-2">Same URL, four shapes — pick whichever your tool wants:</p>
           <ul className="list-none p-0 m-0 text-sm opacity-80 space-y-1">
-            <li><span className="opacity-60">›</span> Browser → rendered card</li>
+            <li><span className="opacity-60">›</span> Browser → rendered page</li>
             <li>
               <span className="opacity-60">›</span> <code className="text-xs">?f=md</code> or{' '}
               <code className="text-xs">Accept: text/markdown</code> → markdown
             </li>
             <li>
               <span className="opacity-60">›</span> <code className="text-xs">?f=json</code> or{' '}
-              <code className="text-xs">Accept: application/json</code> → raw payload
+              <code className="text-xs">Accept: application/json</code> → json
             </li>
             <li>
-              <span className="opacity-60">›</span> Link unfurlers (Slack, Discord, iMessage) → OG card
+              <span className="opacity-60">›</span> Link unfurlers (Slack, Discord, iMessage) → OpenGraph card
             </li>
           </ul>
         </section>
+
+        {EXAMPLES.length > 0 && (
+          <section className="mt-6">
+            <h2 className="text-xs uppercase tracking-widest opacity-60 mb-3">Examples</h2>
+            <ul className="list-none p-0 m-0 text-sm opacity-80 space-y-2">
+              {EXAMPLES.map((ex) => (
+                <li key={ex.url}>
+                  <span className="opacity-60">›</span>{' '}
+                  <a href={ex.url} className="underline decoration-dotted hover:opacity-100">{ex.label}</a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         <footer className="mt-8 pt-4 text-xs opacity-50 flex flex-wrap items-center justify-between gap-2" style={{ borderTop: '1px dashed currentColor' }}>
           <span>Made for AIs. Works for humans.</span>
