@@ -305,7 +305,7 @@ const EXAMPLES: Array<{ label: string; url: string }> = [
 
 export function Landing() {
   return (
-    <main className="cursor-scissors min-h-screen flex items-center justify-center p-6 font-mono">
+    <main className="min-h-screen flex items-center justify-center p-6 font-mono">
       <article className="w-full max-w-[720px] p-8 leading-relaxed" style={{ border: '4px double currentColor' }}>
         <header>
           <LogoMark size={40} className="mb-3" />
@@ -326,7 +326,7 @@ export function Landing() {
         <section className="mt-6">
           <h2 className="text-xs uppercase tracking-widest opacity-60 mb-3">Clip</h2>
           <p className="opacity-80 text-sm mb-3">
-            The extension adds a <span aria-hidden="true">✂️</span> button to every post. One click
+            The extension adds a <LogoMark size={16} className="inline align-[-0.2em] mx-px" /> button to every post. One click
             scrapes the post straight from the page, then builds the payload parameter that carries it:
           </p>
           <pre className="text-xs opacity-60 overflow-x-auto m-0 mb-4 p-0 bg-transparent">
@@ -381,9 +381,15 @@ export function Landing() {
 
         <footer className="mt-8 pt-4 text-xs opacity-50 flex flex-wrap items-center justify-between gap-2" style={{ borderTop: '1px dashed currentColor' }}>
           <span>Made for AIs. Works for humans.</span>
-          <a href="https://github.com/zirkelc/clipped-page" className="underline decoration-dotted hover:opacity-100">
-            source →
-          </a>
+          <span className="flex items-center gap-2">
+            <a href="/privacy" className="underline decoration-dotted hover:opacity-100">
+              privacy
+            </a>
+            <span className="opacity-40">·</span>
+            <a href="https://github.com/zirkelc/clipped-page" className="underline decoration-dotted hover:opacity-100">
+              source →
+            </a>
+          </span>
         </footer>
       </article>
     </main>
@@ -419,7 +425,7 @@ export function PrivacyPolicy() {
         <Section title="Summary">
           <p>
             The clipped.page extension turns an X (Twitter) post into a single self-contained link.
-            It reads a post only when you click its ✂ button, packs that post into the link, and then
+            It reads a post only when you click its <LogoMark size={15} className="inline align-[-0.2em] mx-px" /> button, packs that post into the link, and then
             opens and/or copies the link. There is no account, no database, and nothing about you or the
             posts you clip is stored on any server.
           </p>
@@ -427,7 +433,7 @@ export function PrivacyPolicy() {
 
         <Section title="What the extension accesses">
           <p>
-            When you click the ✂ button on a post, the extension reads that post's publicly visible
+            When you click the <LogoMark size={15} className="inline align-[-0.2em] mx-px" /> button on a post, the extension reads that post's publicly visible
             content from the page you are viewing: author name and handle, text, image and video-thumbnail
             URLs, post metrics, timestamp, and any quoted post. It runs only on <code>x.com</code> and{' '}
             <code>twitter.com</code>.
@@ -453,7 +459,7 @@ export function PrivacyPolicy() {
 
         <Section title="Permissions">
           <ul className="list-none p-0 m-0 space-y-1">
-            <li><span className="opacity-60">›</span> <b>activeTab</b> and host access to x.com / twitter.com — to add the ✂ button and read the post you clip.</li>
+            <li><span className="opacity-60">›</span> <b>activeTab</b> and host access to x.com / twitter.com — to add the <LogoMark size={15} className="inline align-[-0.2em] mx-px" /> button and read the post you clip.</li>
             <li><span className="opacity-60">›</span> <b>storage</b> — to remember your clip-button preference.</li>
           </ul>
         </Section>
