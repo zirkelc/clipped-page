@@ -257,6 +257,21 @@ export function Card({ payload, src, currentUrl }: Props) {
             → {sourceHost}
           </a>
           <span>·</span>
+          <button
+            type="button"
+            id="clipped-share"
+            data-share-title={shareTitle}
+            data-share-text={shareText}
+            className="underline decoration-dotted cursor-pointer hover:opacity-100 bg-transparent border-0 p-0 font-mono text-xs opacity-100"
+          >
+            ↗ share
+          </button>
+          <span>·</span>
+          <span className="opacity-60">view</span>
+          <a href={fmtHref('md')} className="underline decoration-dotted hover:opacity-100">md</a>
+          <span className="opacity-40">|</span>
+          <a href={fmtHref('json')} className="underline decoration-dotted hover:opacity-100">json</a>
+          <span>·</span>
           <span className="opacity-60">copy</span>
           <button
             type="button"
@@ -273,21 +288,6 @@ export function Card({ payload, src, currentUrl }: Props) {
           >
             md
           </button>
-          <span>·</span>
-          <button
-            type="button"
-            id="clipped-share"
-            data-share-title={shareTitle}
-            data-share-text={shareText}
-            className="underline decoration-dotted cursor-pointer hover:opacity-100 bg-transparent border-0 p-0 font-mono text-xs opacity-100"
-          >
-            ↗ share
-          </button>
-          <span>·</span>
-          <span className="opacity-60">view</span>
-          <a href={fmtHref('md')} className="underline decoration-dotted hover:opacity-100">md</a>
-          <span className="opacity-40">|</span>
-          <a href={fmtHref('json')} className="underline decoration-dotted hover:opacity-100">json</a>
         </footer>
       </div>
     </main>

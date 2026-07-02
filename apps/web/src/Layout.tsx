@@ -70,13 +70,13 @@ export function Layout({ meta, alternates, children }: LayoutProps) {
 }
 
 const shareScript = `(()=>{
-const flash=(b,t,ms=1500)=>{const o=b.textContent;b.textContent=t;if(ms)setTimeout(()=>{b.textContent=o},ms)};
-const write=async(b,text)=>{try{await navigator.clipboard.writeText(text);flash(b,'✓')}catch{flash(b,'⚠')}};
+const flash=(b,t)=>{if(b.dataset.orig===undefined)b.dataset.orig=b.textContent;if(b._t)clearTimeout(b._t);b.textContent=t;b._t=setTimeout(()=>{b.textContent=b.dataset.orig;b._t=0},1500)};
+const copy=async(b,text)=>{try{await navigator.clipboard.writeText(text);flash(b,'✓')}catch{flash(b,'⚠')}};
 const copyUrl=document.getElementById('clipped-copy-url');
-if(copyUrl)copyUrl.addEventListener('click',()=>write(copyUrl,location.href));
+if(copyUrl)copyUrl.addEventListener('click',()=>copy(copyUrl,location.href));
 const copyMd=document.getElementById('clipped-copy-md');
 if(copyMd)copyMd.addEventListener('click',async()=>{
-  try{const u=new URL(location.href);u.searchParams.set('f','md');const r=await fetch(u);flash(copyMd,'…',0);await write(copyMd,await r.text());}
+  try{const u=new URL(location.href);u.searchParams.set('f','md');const r=await fetch(u);if(!r.ok)throw 0;await copy(copyMd,await r.text());}
   catch{flash(copyMd,'⚠')}
 });
 const share=document.getElementById('clipped-share');
