@@ -2,7 +2,7 @@ import type { ReactElement } from 'react';
 import { Hono } from 'hono';
 import { renderToString } from 'react-dom/server';
 import { parseShareUrl, toMarkdown, SHARE_URL_VERSION } from '@clipped-page/shared';
-import { Card, ErrorPage, Landing } from './Card.js';
+import { Card, ErrorPage, Landing, PrivacyPolicy } from './Card.js';
 import { Layout, PlainLayout, buildMeta } from './Layout.js';
 import { track } from './analytics.js';
 
@@ -24,8 +24,22 @@ function negotiate(req: Request, url: URL): Format {
   return 'html';
 }
 
+/** `Link` header advertising the same URL's Markdown and JSON representations. */
+function alternatesLink(url: URL): string {
+  const link = (f: string, type: string) => {
+    const u = new URL(url);
+    u.searchParams.set('f', f);
+    return `<${u.pathname}${u.search}>; rel="alternate"; type="${type}"`;
+  };
+  return `${link('md', 'text/markdown')}, ${link('json', 'application/json')}`;
+}
+
+/** Advertises the alternate representations to agents reading the raw HTML. */
+const FORMAT_HINT =
+  '<!-- clipped.page also serves this URL as Markdown (?f=md or Accept: text/markdown) and JSON (?f=json or Accept: application/json). -->';
+
 function htmlResponse(node: ReactElement, status = 200): { response: Response; bytes: number } {
-  const html = '<!doctype html>' + renderToString(node);
+  const html = '<!doctype html>\n' + FORMAT_HINT + '\n' + renderToString(node);
   return {
     response: new Response(html, {
       status,
@@ -74,22 +88,38 @@ app.get('/', async (c) => {
   let sourceHost = '';
   try { sourceHost = new URL(src.startsWith('http') ? src : `https://${src}`).hostname; } catch { /* ignore */ }
 
+  const link = alternatesLink(url);
   if (format === 'md') {
     const body = toMarkdown(payload, src);
     track(ae, { version: SHARE_URL_VERSION, format: 'md', status: 200, sourceHost, request: c.req.raw, responseBytes: body.length });
-    return new Response(body, { headers: { 'content-type': 'text/markdown; charset=utf-8' } });
+    return new Response(body, { headers: { 'content-type': 'text/markdown; charset=utf-8', link } });
   }
   if (format === 'json') {
     const body = JSON.stringify({ src, payload }, null, 2);
     track(ae, { version: SHARE_URL_VERSION, format: 'json', status: 200, sourceHost, request: c.req.raw, responseBytes: body.length });
-    return new Response(body, { headers: { 'content-type': 'application/json; charset=utf-8' } });
+    return new Response(body, { headers: { 'content-type': 'application/json; charset=utf-8', link } });
   }
 
   const meta = buildMeta(payload, src);
+  const alt = (f: Format) => {
+    const u = new URL(c.req.url);
+    u.searchParams.set('f', f);
+    return u.pathname + u.search;
+  };
   const { response, bytes } = htmlResponse(
-    <Layout meta={meta}><Card payload={payload} src={src} currentUrl={c.req.url} /></Layout>,
+    <Layout meta={meta} alternates={{ md: alt('md'), json: alt('json') }}>
+      <Card payload={payload} src={src} currentUrl={c.req.url} />
+    </Layout>,
   );
+  response.headers.set('link', link);
   track(ae, { version: SHARE_URL_VERSION, format: 'html', status: 200, sourceHost, request: c.req.raw, responseBytes: bytes });
+  return response;
+});
+
+app.get('/privacy', () => {
+  const { response } = htmlResponse(
+    <PlainLayout title="clipped.page · privacy"><PrivacyPolicy /></PlainLayout>,
+  );
   return response;
 });
 
