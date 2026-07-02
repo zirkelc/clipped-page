@@ -6,6 +6,7 @@ export default defineConfig({
   manifest: {
     name: 'clipped.page',
     description: 'Clip any post on x.com as a self-contained URL.',
+    homepage_url: 'https://clipped.page',
     permissions: ['activeTab', 'storage'],
     host_permissions: ['https://x.com/*', 'https://twitter.com/*'],
     action: {
