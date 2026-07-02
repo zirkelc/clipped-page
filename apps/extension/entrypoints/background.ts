@@ -12,23 +12,26 @@ export default defineBackground(() => {
 
   chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     if (!message || typeof message !== 'object') return;
-    if ((message as { kind?: string }).kind !== 'open-clipped') return;
+    if ((message as { kind?: string }).kind !== 'clip') return;
 
-    const { data } = message as { data: ExtractedTweet };
-    buildAndOpen(data)
-      .then(() => sendResponse({ ok: true }))
+    const { data, open } = message as { data: ExtractedTweet; open?: boolean };
+    buildClip(data, open ?? true)
+      .then((url) => sendResponse({ ok: true, url }))
       .catch((e) => sendResponse({ ok: false, error: errMsg(e) }));
     return true;
   });
 });
 
-async function buildAndOpen(extracted: ExtractedTweet): Promise<void> {
+/** Builds the clipped URL and, when `open` is set, opens it in a new tab.
+ * Returns the URL so the caller can also copy it to the clipboard. */
+async function buildClip(extracted: ExtractedTweet, open: boolean): Promise<string> {
   const url = await buildShareUrl({
     baseUrl: DEFAULT_BASE_URL,
     src: extracted.src,
     payload: extracted.payload,
   });
-  await chrome.tabs.create({ url, active: true });
+  if (open) await chrome.tabs.create({ url, active: true });
+  return url;
 }
 
 function errMsg(e: unknown): string {

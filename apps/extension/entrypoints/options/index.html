@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>clipped.page settings</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>clipped<span class="dim">.page</span></h1>
+      <p class="dim">When you click the ✂ button on a post:</p>
+      <form id="opts">
+        <label><input type="radio" name="clipAction" value="open" /> Open the clipped link in a new tab</label>
+        <label><input type="radio" name="clipAction" value="copy" /> Copy the clipped link to the clipboard</label>
+        <label><input type="radio" name="clipAction" value="copy+open" /> Copy the link and open it</label>
+      </form>
+      <p id="status" class="status"></p>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

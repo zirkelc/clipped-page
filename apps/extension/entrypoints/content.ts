@@ -1,7 +1,13 @@
 import { defineContentScript } from 'wxt/utils/define-content-script';
 import { extractTweetFromArticle, findTargetArticle, type ExtractedTweet } from '../lib/extract.js';
+import { getClipAction, DEFAULT_CLIP_ACTION, type ClipAction } from '../lib/settings.js';
 
 const BUTTON_MARKER = 'data-clipped-injected';
+
+/* Cache the clip-action setting so the click handler stays synchronous up to
+ * the clipboard write (an extra awaited storage read would risk spending the
+ * click's transient user activation before we can write to the clipboard). */
+let clipAction: ClipAction = DEFAULT_CLIP_ACTION;
 
 /** The brand mark (scissors), sized to sit inline with X's action-bar icons. */
 const CLIP_ICON =
@@ -11,10 +17,18 @@ export default defineContentScript({
   matches: ['https://x.com/*', 'https://twitter.com/*'],
   runAt: 'document_idle',
   main() {
+    setupClipAction();
     setupMutationObserver();
     setupMessageListener();
   },
 });
+
+function setupClipAction(): void {
+  void getClipAction().then((a) => (clipAction = a));
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'sync' && changes.clipAction) clipAction = changes.clipAction.newValue as ClipAction;
+  });
+}
 
 function setupMutationObserver(): void {
   const tryInject = () => {
@@ -74,15 +88,46 @@ async function clip(article: HTMLElement, btn: HTMLButtonElement): Promise<void>
       flash(btn, '⚠', original);
       return;
     }
-    const resp = await chrome.runtime.sendMessage({ kind: 'open-clipped', data: extracted });
-    if (resp?.ok) flash(btn, '✓', original);
-    else {
+    const wantsCopy = clipAction === 'copy' || clipAction === 'copy+open';
+    const wantsOpen = clipAction === 'open' || clipAction === 'copy+open';
+    const resp = await chrome.runtime.sendMessage({ kind: 'clip', data: extracted, open: wantsOpen });
+    if (!resp?.ok) {
       console.error('clipped:', resp?.error);
       flash(btn, '⚠', original);
+      return;
     }
+    if (wantsCopy && !(await copyToClipboard(resp.url))) {
+      flash(btn, '⚠', original);
+      return;
+    }
+    flash(btn, '✓', original);
   } catch (e) {
     console.error('clipped:', e);
     flash(btn, '⚠', original);
+  }
+}
+
+/** Copy text, falling back to execCommand if the async clipboard API is
+ * blocked (e.g. the click's user activation lapsed during the await). */
+async function copyToClipboard(text: string): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    /* fall through to the legacy path */
+  }
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand('copy');
+    ta.remove();
+    return ok;
+  } catch (e) {
+    console.error('clipped:', e);
+    return false;
   }
 }
 
@@ -107,7 +152,7 @@ function setupMessageListener(): void {
       return false;
     }
     chrome.runtime
-      .sendMessage({ kind: 'open-clipped', data: extracted })
+      .sendMessage({ kind: 'clip', data: extracted, open: true })
       .then((resp) => sendResponse(resp))
       .catch((e) => sendResponse({ ok: false, error: e instanceof Error ? e.message : String(e) }));
     return true;
