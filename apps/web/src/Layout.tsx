@@ -27,10 +27,11 @@ export function buildMeta(payload: Payload, src: string): Meta {
 
 type LayoutProps = {
   meta: Meta;
+  alternates?: { md: string; json: string };
   children: ReactNode;
 };
 
-export function Layout({ meta, children }: LayoutProps) {
+export function Layout({ meta, alternates, children }: LayoutProps) {
   return (
     <html lang="en">
       <head>
@@ -51,6 +52,12 @@ export function Layout({ meta, children }: LayoutProps) {
         {meta.image && <meta name="twitter:image" content={meta.image} />}
         {meta.creator && <meta name="twitter:creator" content={meta.creator} />}
         <link rel="canonical" href={meta.url} />
+        {alternates && (
+          <>
+            <link rel="alternate" type="text/markdown" href={alternates.md} />
+            <link rel="alternate" type="application/json" href={alternates.json} />
+          </>
+        )}
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="stylesheet" href="/styles.css" />
       </head>
@@ -64,8 +71,14 @@ export function Layout({ meta, children }: LayoutProps) {
 
 const shareScript = `(()=>{
 const flash=(b,t,ms=1500)=>{const o=b.textContent;b.textContent=t;if(ms)setTimeout(()=>{b.textContent=o},ms)};
-const copy=document.getElementById('clipped-copy');
-if(copy)copy.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(location.href);flash(copy,'✓ copied')}catch{flash(copy,'⚠ failed')}});
+const write=async(b,text)=>{try{await navigator.clipboard.writeText(text);flash(b,'✓')}catch{flash(b,'⚠')}};
+const copyUrl=document.getElementById('clipped-copy-url');
+if(copyUrl)copyUrl.addEventListener('click',()=>write(copyUrl,location.href));
+const copyMd=document.getElementById('clipped-copy-md');
+if(copyMd)copyMd.addEventListener('click',async()=>{
+  try{const u=new URL(location.href);u.searchParams.set('f','md');const r=await fetch(u);flash(copyMd,'…',0);await write(copyMd,await r.text());}
+  catch{flash(copyMd,'⚠')}
+});
 const share=document.getElementById('clipped-share');
 if(share)share.addEventListener('click',async()=>{
   const url=location.href;

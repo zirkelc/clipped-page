@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { buildShareFields, formatCount, type Payload, type Post, type Video } from '@clipped-page/shared';
 
 /**
@@ -256,12 +257,21 @@ export function Card({ payload, src, currentUrl }: Props) {
             → {sourceHost}
           </a>
           <span>·</span>
+          <span className="opacity-60">copy</span>
           <button
             type="button"
-            id="clipped-copy"
+            id="clipped-copy-url"
             className="underline decoration-dotted cursor-pointer hover:opacity-100 bg-transparent border-0 p-0 font-mono text-xs opacity-100"
           >
-            📋 copy
+            url
+          </button>
+          <span className="opacity-40">|</span>
+          <button
+            type="button"
+            id="clipped-copy-md"
+            className="underline decoration-dotted cursor-pointer hover:opacity-100 bg-transparent border-0 p-0 font-mono text-xs opacity-100"
+          >
+            md
           </button>
           <span>·</span>
           <button
@@ -274,8 +284,9 @@ export function Card({ payload, src, currentUrl }: Props) {
             ↗ share
           </button>
           <span>·</span>
-          <span className="opacity-60">view as</span>
+          <span className="opacity-60">view</span>
           <a href={fmtHref('md')} className="underline decoration-dotted hover:opacity-100">md</a>
+          <span className="opacity-40">|</span>
           <a href={fmtHref('json')} className="underline decoration-dotted hover:opacity-100">json</a>
         </footer>
       </div>
@@ -385,6 +396,86 @@ export function ErrorPage({ message }: { message: string }) {
       <article className="w-full max-w-[720px] p-8" style={{ border: '4px double currentColor' }}>
         <h1 className="text-xl mb-2">clipped.page · error</h1>
         <p className="opacity-80">{message}</p>
+      </article>
+    </main>
+  );
+}
+
+export function PrivacyPolicy() {
+  const Section = ({ title, children }: { title: string; children: ReactNode }) => (
+    <section className="mt-6">
+      <h2 className="text-xs uppercase tracking-widest opacity-60 mb-2">{title}</h2>
+      <div className="opacity-80 text-sm leading-relaxed space-y-2">{children}</div>
+    </section>
+  );
+  return (
+    <main className="min-h-screen flex items-start justify-center p-6 font-mono">
+      <article className="w-full max-w-[720px] p-8 leading-relaxed my-8" style={{ border: '4px double currentColor' }}>
+        <header>
+          <h1 className="text-2xl mb-1">Privacy Policy</h1>
+          <p className="opacity-60 text-sm">clipped.page browser extension · last updated July 2, 2026</p>
+        </header>
+
+        <Section title="Summary">
+          <p>
+            The clipped.page extension turns an X (Twitter) post into a single self-contained link.
+            It reads a post only when you click its ✂ button, packs that post into the link, and then
+            opens and/or copies the link. There is no account, no database, and nothing about you or the
+            posts you clip is stored on any server.
+          </p>
+        </Section>
+
+        <Section title="What the extension accesses">
+          <p>
+            When you click the ✂ button on a post, the extension reads that post's publicly visible
+            content from the page you are viewing: author name and handle, text, image and video-thumbnail
+            URLs, post metrics, timestamp, and any quoted post. It runs only on <code>x.com</code> and{' '}
+            <code>twitter.com</code>.
+          </p>
+        </Section>
+
+        <Section title="What it does with it">
+          <p>
+            That content is encoded directly into a <code>clipped.page</code> URL. Depending on your
+            setting, the extension opens the link in a new tab, copies it to your clipboard, or both.
+            The data lives inside the link itself — decoding the link reproduces the post.
+          </p>
+        </Section>
+
+        <Section title="What is stored">
+          <p>
+            Nothing is collected or stored server-side: no database, no accounts, no logs of the posts
+            you clip. The only data the extension saves is your clip-button preference (open / copy /
+            copy+open), kept in your browser via <code>chrome.storage</code> and synced by your browser
+            if you have extension sync enabled.
+          </p>
+        </Section>
+
+        <Section title="Permissions">
+          <ul className="list-none p-0 m-0 space-y-1">
+            <li><span className="opacity-60">›</span> <b>activeTab</b> and host access to x.com / twitter.com — to add the ✂ button and read the post you clip.</li>
+            <li><span className="opacity-60">›</span> <b>storage</b> — to remember your clip-button preference.</li>
+          </ul>
+        </Section>
+
+        <Section title="Analytics and third parties">
+          <p>
+            The extension contains no analytics or tracking. The clipped.page website records anonymous,
+            aggregate request counts (format requested, response status, coarse country, referrer host)
+            with no cookies, no stored IP addresses, and no personal identifiers. Your data is never sold
+            or shared, and nothing is sent to any third party beyond the clipped.page link you generate.
+          </p>
+        </Section>
+
+        <Section title="Contact">
+          <p>
+            Source code and issues:{' '}
+            <a href="https://github.com/zirkelc/clipped-page" className="underline decoration-dotted hover:opacity-100">
+              github.com/zirkelc/clipped-page
+            </a>
+            .
+          </p>
+        </Section>
       </article>
     </main>
   );
