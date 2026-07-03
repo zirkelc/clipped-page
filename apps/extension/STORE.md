@@ -53,8 +53,23 @@ Clip a post on x.com into a self-contained, shareable URL that renders the post 
 - Does the extension collect user data? **No.** All post data is encoded client-side into the URL; nothing is sent to or stored on a server.
 - Remote code: **No.** All code is bundled in the package.
 
-## Assets still needed (manual)
+## Assets (in `assets/store/` at the repo root)
 
-- At least 1 screenshot, 1280×800 or 640×400 PNG/JPEG (extension in action on an x.com post)
-- Optional small promo tile, 440×280
-- Store icon 128×128 is already in the package (`public/icon/128.png`)
+All produced at exact CWS sizes via `assets/store/shot.mjs` (see its README):
+
+- `hero.png` (1280×800) — screenshot: clean post card
+- `quote.png` (1280×800) — screenshot: quoted-post card
+- `image.png` (1280×800) — screenshot: post with images
+- `thread.png` (1280×800) — screenshot: 9-post thread
+- `landing.png` (1280×800) — screenshot: how it works
+- `tile.png` (440×280) — small promo tile
+- `marquee.png` (1400×560) — marquee promo (featured)
+- Store icon 128×128 ships in the package (`public/icon/128.png`)
+
+## Submitting (manual — needs your Google login)
+
+1. Sign in at the CWS developer dashboard (publisher `e7c53128-ba46-4883-9ffb-ed583efe8a26`).
+2. Upload `.output/clipped-pageextension-1.0.0-chrome.zip`.
+3. Paste the listing fields above; upload screenshots + tiles from `assets/store/`.
+4. Privacy policy URL: https://clipped.page/privacy
+5. Fill single-purpose + permission justifications above; submit for review.
