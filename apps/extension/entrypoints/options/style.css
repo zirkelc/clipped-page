@@ -33,6 +33,11 @@ h1 {
   opacity: 0.6;
 }
 
+.scissors {
+  vertical-align: -0.2em;
+  margin: 0 1px;
+}
+
 form {
   display: flex;
   flex-direction: column;
