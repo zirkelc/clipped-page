@@ -10,7 +10,7 @@ export default defineConfig({
     permissions: ['activeTab', 'storage'],
     host_permissions: ['https://x.com/*', 'https://twitter.com/*'],
     action: {
-      default_title: 'Open clipped.page',
+      default_title: 'clipped.page settings',
     },
   },
   /** Don't auto-launch a fresh Chrome on `pnpm dev`. Use your existing browser. */

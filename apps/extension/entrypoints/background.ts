@@ -4,10 +4,10 @@ import type { ExtractedTweet } from '../lib/extract.js';
 import { DEFAULT_BASE_URL } from '../lib/settings.js';
 
 export default defineBackground(() => {
-  /* Clicking the toolbar icon opens the brand site. Clipping happens via the
-   * ✂️ button injected next to each post by the content script. */
+  /* Clicking the toolbar icon opens the settings page in a tab. Clipping happens
+   * via the ✂️ button injected next to each post by the content script. */
   chrome.action.onClicked.addListener(() => {
-    void chrome.tabs.create({ url: DEFAULT_BASE_URL, active: true });
+    void chrome.tabs.create({ url: chrome.runtime.getURL('options.html'), active: true });
   });
 
   chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
