@@ -330,7 +330,7 @@ export function Landing() {
             scrapes the post straight from the page, then builds the payload parameter that carries it:
           </p>
           <pre className="text-xs opacity-60 overflow-x-auto m-0 mb-4 p-0 bg-transparent">
-{`HTML ─scrape→ Post ─serialize→ JSON ─compress:gzip→ bytes ─encode:base64url→ string`}
+{`HTML ─scrape→ Post ─serialize→ JSON ─compress:gzip→ Bytes ─encode:base64url→ URL`}
           </pre>
           <p className="opacity-80 text-sm mb-3">
             The link opens straight away. Nothing touches the X API, and nothing is stored. The link is the post.
