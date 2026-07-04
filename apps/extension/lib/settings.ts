@@ -10,10 +10,10 @@ export const DEFAULT_BASE_URL = isDev ? DEV_BASE_URL : PROD_BASE_URL;
 
 /**
  * What the ✂ clip button does with the built clipped URL.
- * "open" opens it in a new tab, "copy" copies it to the clipboard, and
- * "copy+open" does both.
+ * "open" opens it in a new tab, "copy" copies it to the clipboard,
+ * "copy+open" does both, and "share" invokes the native share sheet.
  */
-export const CLIP_ACTIONS = ['open', 'copy', 'copy+open'] as const;
+export const CLIP_ACTIONS = ['open', 'copy', 'copy+open', 'share'] as const;
 export type ClipAction = (typeof CLIP_ACTIONS)[number];
 export const DEFAULT_CLIP_ACTION: ClipAction = 'open';
 

@@ -1,4 +1,5 @@
 import { defineContentScript } from 'wxt/utils/define-content-script';
+import { buildShareFields } from '@clipped-page/shared/share';
 import { extractTweetFromArticle, findTargetArticle, type ExtractedTweet } from '../lib/extract.js';
 import { getClipAction, DEFAULT_CLIP_ACTION, type ClipAction } from '../lib/settings.js';
 
@@ -90,6 +91,7 @@ async function clip(article: HTMLElement, btn: HTMLButtonElement): Promise<void>
     }
     const wantsCopy = clipAction === 'copy' || clipAction === 'copy+open';
     const wantsOpen = clipAction === 'open' || clipAction === 'copy+open';
+    const wantsShare = clipAction === 'share';
     const resp = await chrome.runtime.sendMessage({ kind: 'clip', data: extracted, open: wantsOpen });
     if (!resp?.ok) {
       console.error('clipped:', resp?.error);
@@ -99,6 +101,17 @@ async function clip(article: HTMLElement, btn: HTMLButtonElement): Promise<void>
     if (wantsCopy && !(await copyToClipboard(resp.url))) {
       flash(btn, '⚠', original);
       return;
+    }
+    if (wantsShare) {
+      const result = await shareUrl(resp.url, extracted);
+      if (result === 'cancelled') {
+        btn.innerHTML = original;
+        return;
+      }
+      if (result === 'failed') {
+        flash(btn, '⚠', original);
+        return;
+      }
     }
     flash(btn, '✓', original);
   } catch (e) {
@@ -128,6 +141,24 @@ async function copyToClipboard(text: string): Promise<boolean> {
   } catch (e) {
     console.error('clipped:', e);
     return false;
+  }
+}
+
+/** Open the native share sheet for the clipped URL. Returns "cancelled" when
+ * the user dismisses the sheet (not an error), and falls back to copying the
+ * link on platforms without Web Share support. */
+async function shareUrl(url: string, extracted: ExtractedTweet): Promise<'shared' | 'cancelled' | 'failed'> {
+  if (typeof navigator.share !== 'function') {
+    return (await copyToClipboard(url)) ? 'shared' : 'failed';
+  }
+  const { title, text } = buildShareFields(extracted.payload);
+  try {
+    await navigator.share({ url, title, text });
+    return 'shared';
+  } catch (e) {
+    if (e instanceof Error && e.name === 'AbortError') return 'cancelled';
+    console.error('clipped:', e);
+    return 'failed';
   }
 }
 

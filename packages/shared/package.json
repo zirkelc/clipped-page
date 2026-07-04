@@ -7,7 +7,8 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./count": "./src/count.ts"
+    "./count": "./src/count.ts",
+    "./share": "./src/share.ts"
   },
   "scripts": {
     "test": "vitest run",
