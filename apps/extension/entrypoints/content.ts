@@ -46,7 +46,7 @@ function injectButton(article: HTMLElement): void {
   const actionBar = article.querySelector('[role="group"]');
   if (!actionBar) return;
 
-  const btn = makeActionButton(CLIP_ICON, 'Clip on clipped.page');
+  const btn = makeActionButton(CLIP_ICON, 'Clip on clipped.page', 'Clip');
   btn.addEventListener('click', (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -57,36 +57,88 @@ function injectButton(article: HTMLElement): void {
   article.setAttribute(BUTTON_MARKER, 'true');
 }
 
-function makeActionButton(iconHtml: string, title: string): HTMLButtonElement {
+/* Hover accent for the button, mirroring X's per-action colored hover (tinted
+ * circle + colored icon). Distinct from X's blue/green/pink so it reads as ours. */
+const ACCENT = '#8b5cf6';
+const ACCENT_TINT = 'rgba(139, 92, 246, 0.12)';
+
+function makeActionButton(iconHtml: string, label: string, tooltip: string): HTMLButtonElement {
   const btn = document.createElement('button');
   btn.type = 'button';
-  btn.title = title;
-  btn.setAttribute('aria-label', title);
+  btn.setAttribute('aria-label', label);
   btn.style.cssText = [
     'all: unset',
+    'position: relative',
     'cursor: pointer',
     'padding: 6px 8px',
     'margin-left: 4px',
     'border-radius: 9999px',
     'font: inherit',
     'font-size: 14px',
-    'opacity: 0.6',
+    'opacity: 0.75',
     'display: inline-flex',
     'align-items: center',
+    'transition: color 0.15s, background-color 0.15s, opacity 0.15s',
   ].join(';');
-  btn.innerHTML = iconHtml;
-  btn.addEventListener('mouseenter', () => (btn.style.opacity = '1'));
-  btn.addEventListener('mouseleave', () => (btn.style.opacity = '0.6'));
+
+  /* The icon lives in its own span so the click-feedback flash can swap it
+   * without clobbering the tooltip sibling. */
+  const icon = document.createElement('span');
+  icon.setAttribute('data-clipped-icon', '');
+  icon.style.cssText = 'display: inline-flex; align-items: center';
+  icon.innerHTML = iconHtml;
+  btn.appendChild(icon);
+
+  const tip = document.createElement('span');
+  tip.textContent = tooltip;
+  tip.style.cssText = [
+    'position: absolute',
+    'top: calc(100% + 4px)',
+    'left: 50%',
+    'transform: translateX(-50%)',
+    'background: rgba(0, 0, 0, 0.92)',
+    'color: #fff',
+    'padding: 2px 7px',
+    'border-radius: 4px',
+    'font-size: 11px',
+    'line-height: 1.5',
+    'white-space: nowrap',
+    'opacity: 0',
+    'pointer-events: none',
+    'transition: opacity 0.12s',
+    'z-index: 9999',
+  ].join(';');
+  btn.appendChild(tip);
+
+  let tipTimer = 0;
+  btn.addEventListener('mouseenter', () => {
+    btn.style.opacity = '1';
+    btn.style.color = ACCENT;
+    btn.style.backgroundColor = ACCENT_TINT;
+    tipTimer = window.setTimeout(() => (tip.style.opacity = '1'), 300);
+  });
+  btn.addEventListener('mouseleave', () => {
+    btn.style.opacity = '0.75';
+    btn.style.color = '';
+    btn.style.backgroundColor = '';
+    clearTimeout(tipTimer);
+    tip.style.opacity = '0';
+  });
   return btn;
 }
 
+function iconOf(btn: HTMLButtonElement): HTMLElement {
+  return btn.querySelector('[data-clipped-icon]') as HTMLElement;
+}
+
 async function clip(article: HTMLElement, btn: HTMLButtonElement): Promise<void> {
-  const original = btn.innerHTML;
-  btn.textContent = '…';
+  const icon = iconOf(btn);
+  const original = icon.innerHTML;
+  icon.textContent = '…';
   try {
     const extracted = extractTweetFromArticle(article);
     if (!extracted) {
-      flash(btn, '⚠', original);
+      flash(icon, '⚠', original);
       return;
     }
     const wantsCopy = clipAction === 'copy' || clipAction === 'copy+open';
@@ -95,28 +147,28 @@ async function clip(article: HTMLElement, btn: HTMLButtonElement): Promise<void>
     const resp = await chrome.runtime.sendMessage({ kind: 'clip', data: extracted, open: wantsOpen });
     if (!resp?.ok) {
       console.error('clipped:', resp?.error);
-      flash(btn, '⚠', original);
+      flash(icon, '⚠', original);
       return;
     }
     if (wantsCopy && !(await copyToClipboard(resp.url))) {
-      flash(btn, '⚠', original);
+      flash(icon, '⚠', original);
       return;
     }
     if (wantsShare) {
       const result = await shareUrl(resp.url, extracted);
       if (result === 'cancelled') {
-        btn.innerHTML = original;
+        icon.innerHTML = original;
         return;
       }
       if (result === 'failed') {
-        flash(btn, '⚠', original);
+        flash(icon, '⚠', original);
         return;
       }
     }
-    flash(btn, '✓', original);
+    flash(icon, '✓', original);
   } catch (e) {
     console.error('clipped:', e);
-    flash(btn, '⚠', original);
+    flash(icon, '⚠', original);
   }
 }
 
@@ -162,9 +214,9 @@ async function shareUrl(url: string, extracted: ExtractedTweet): Promise<'shared
   }
 }
 
-function flash(btn: HTMLButtonElement, label: string, revert: string, ms = 1500): void {
-  btn.textContent = label;
-  if (ms > 0) setTimeout(() => (btn.innerHTML = revert), ms);
+function flash(icon: HTMLElement, label: string, revert: string, ms = 1500): void {
+  icon.textContent = label;
+  if (ms > 0) setTimeout(() => (icon.innerHTML = revert), ms);
 }
 
 /* Popup can ask us to clip the focal/topmost tweet on the current page. */
