@@ -1,0 +1,21 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  html,body{margin:0;height:100%;background:#0b0b0b;color:#e6e6e6;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;}
+  .wrap{box-sizing:border-box;width:1280px;height:640px;padding:80px 88px;
+    display:flex;flex-direction:column;justify-content:center;}
+  svg{stroke:#e6e6e6}
+  .word{font-size:76px;letter-spacing:1px;margin-top:30px}
+  .dim{opacity:.5}
+  .tag{font-size:27px;opacity:.75;margin-top:20px}
+  .pipe{font-size:18px;opacity:.4;margin-top:68px;white-space:nowrap}
+</style></head>
+<body><div class="wrap">
+  <svg width="108" height="108" viewBox="0 0 32 32" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="23" r="3.5"/><circle cx="23" cy="23" r="3.5"/>
+    <path d="M20.5 20.5 L18.3 18.3"/><path d="M13.7 13.7 L5 5"/><path d="M11.5 20.5 L27 5"/>
+  </svg>
+  <div class="word">clipped<span class="dim">.page</span></div>
+  <div class="tag">Clip any X post into a self-contained URL.<br>No account, no server, no app.</div>
+  <div class="pipe">HTML &#8211;scrape&#8594; Post &#8211;serialize&#8594; JSON &#8211;compress:gzip&#8594; Bytes &#8211;encode:base64url&#8594; URL</div>
+</div></body></html>

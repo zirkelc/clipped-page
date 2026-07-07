@@ -16,6 +16,7 @@ above framed content. Regenerate with headless Chrome via the scripts below.
 | `icon-128.png`    | 128×128   | Store icon                                  |
 | `tile.png`        | 440×280   | Small promo tile                            |
 | `marquee.png`     | 1400×560  | Marquee promo (featured listings)           |
+| `social.png`      | 1280×640  | GitHub repo social preview (Settings)       |
 
 ## Regenerate
 
@@ -36,6 +37,7 @@ node shot.mjs url "https://clipped.page/" landing.png
 # Branded promo art
 node shot.mjs url "file://$PWD/tile.html"    tile.png    440 280
 node shot.mjs url "file://$PWD/marquee.html" marquee.png 1400 560
+node shot.mjs url "file://$PWD/social.html"  social.png  1280 640
 ```
 
 `store-shots.mjs` / `formats-store.mjs` iframe the live clipped.page renders of
