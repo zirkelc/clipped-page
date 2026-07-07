@@ -8,7 +8,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./count": "./src/count.ts",
-    "./share": "./src/share.ts"
+    "./share": "./src/share.ts",
+    "./format": "./src/format.ts"
   },
   "scripts": {
     "test": "vitest run",

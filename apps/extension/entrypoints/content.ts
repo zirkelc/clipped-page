@@ -1,5 +1,6 @@
 import { defineContentScript } from 'wxt/utils/define-content-script';
 import { buildShareFields } from '@clipped-page/shared/share';
+import { toMarkdown } from '@clipped-page/shared/format';
 import { extractTweetFromArticle, findTargetArticle, type ExtractedTweet } from '../lib/extract.js';
 import { getClipAction, DEFAULT_CLIP_ACTION, type ClipAction } from '../lib/settings.js';
 
@@ -139,6 +140,13 @@ async function clip(article: HTMLElement, btn: HTMLButtonElement): Promise<void>
     const extracted = extractTweetFromArticle(article);
     if (!extracted) {
       flash(icon, '⚠', original);
+      return;
+    }
+    /* Markdown is self-contained from the extracted post, so this action needs
+     * neither the built URL nor a background round-trip. */
+    if (clipAction === 'copy-md') {
+      const md = toMarkdown(extracted.payload, extracted.src);
+      flash(icon, (await copyToClipboard(md)) ? '✓' : '⚠', original);
       return;
     }
     const wantsCopy = clipAction === 'copy' || clipAction === 'copy+open';
