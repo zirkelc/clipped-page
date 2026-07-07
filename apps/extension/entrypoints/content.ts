@@ -63,67 +63,93 @@ function injectButton(article: HTMLElement): void {
 const ACCENT = '#8b5cf6';
 const ACCENT_TINT = 'rgba(139, 92, 246, 0.12)';
 
+/* Matches X's native action-button tooltip (measured from the Share button):
+ * medium semi-transparent gray, fully-rounded pill, 11px white text, no shadow.
+ * Portaled to <body> and `position: fixed` so it floats above the action bar /
+ * "View quotes" row instead of being trapped in their stacking context. */
+const TOOLTIP_CSS = [
+  'position: fixed',
+  'transform: translateX(-50%)',
+  'background: rgba(70, 70, 70, 0.9)',
+  'color: #fff',
+  'padding: 3px 8px',
+  'border-radius: 9999px',
+  'font-family: system-ui, sans-serif',
+  'font-size: 11px',
+  'font-weight: 400',
+  'line-height: 12px',
+  'white-space: nowrap',
+  'opacity: 0',
+  'pointer-events: none',
+  'transition: opacity 0.12s',
+  'z-index: 2147483647',
+].join(';');
+
 function makeActionButton(iconHtml: string, label: string, tooltip: string): HTMLButtonElement {
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.setAttribute('aria-label', label);
   btn.style.cssText = [
     'all: unset',
-    'position: relative',
     'cursor: pointer',
-    'padding: 6px 8px',
     'margin-left: 4px',
-    'border-radius: 9999px',
-    'font: inherit',
-    'font-size: 14px',
-    'opacity: 0.75',
     'display: inline-flex',
     'align-items: center',
-    'transition: color 0.15s, background-color 0.15s, opacity 0.15s',
   ].join(';');
 
-  /* The icon lives in its own span so the click-feedback flash can swap it
-   * without clobbering the tooltip sibling. */
+  /* Fixed square wrapper so the hover highlight is a circle (X stretches flex
+   * children in the action bar, which would otherwise make an oval), and so the
+   * click-feedback flash can swap the icon glyph in isolation. */
   const icon = document.createElement('span');
   icon.setAttribute('data-clipped-icon', '');
-  icon.style.cssText = 'display: inline-flex; align-items: center';
+  icon.style.cssText = [
+    'width: 34px',
+    'height: 34px',
+    'border-radius: 50%',
+    'display: inline-flex',
+    'align-items: center',
+    'justify-content: center',
+    'font-size: 14px',
+    'opacity: 0.75',
+    'transition: color 0.15s, background-color 0.15s, opacity 0.15s',
+  ].join(';');
   icon.innerHTML = iconHtml;
   btn.appendChild(icon);
 
-  const tip = document.createElement('span');
-  tip.textContent = tooltip;
-  tip.style.cssText = [
-    'position: absolute',
-    'top: calc(100% + 4px)',
-    'left: 50%',
-    'transform: translateX(-50%)',
-    'background: rgba(0, 0, 0, 0.92)',
-    'color: #fff',
-    'padding: 2px 7px',
-    'border-radius: 4px',
-    'font-size: 11px',
-    'line-height: 1.5',
-    'white-space: nowrap',
-    'opacity: 0',
-    'pointer-events: none',
-    'transition: opacity 0.12s',
-    'z-index: 9999',
-  ].join(';');
-  btn.appendChild(tip);
-
-  let tipTimer = 0;
+  let showTimer = 0;
+  let tip: HTMLElement | null = null;
+  const removeTip = () => {
+    if (!tip) return;
+    const t = tip;
+    tip = null;
+    t.style.opacity = '0';
+    setTimeout(() => t.remove(), 150);
+  };
   btn.addEventListener('mouseenter', () => {
-    btn.style.opacity = '1';
-    btn.style.color = ACCENT;
-    btn.style.backgroundColor = ACCENT_TINT;
-    tipTimer = window.setTimeout(() => (tip.style.opacity = '1'), 300);
+    icon.style.opacity = '1';
+    icon.style.color = ACCENT;
+    icon.style.backgroundColor = ACCENT_TINT;
+    showTimer = window.setTimeout(() => {
+      if (!btn.isConnected) return;
+      const r = icon.getBoundingClientRect();
+      const el = document.createElement('div');
+      el.textContent = tooltip;
+      el.style.cssText = TOOLTIP_CSS;
+      el.style.left = `${r.left + r.width / 2}px`;
+      el.style.top = `${r.bottom + 4}px`;
+      document.body.appendChild(el);
+      tip = el;
+      requestAnimationFrame(() => {
+        if (tip) tip.style.opacity = '1';
+      });
+    }, 300);
   });
   btn.addEventListener('mouseleave', () => {
-    btn.style.opacity = '0.75';
-    btn.style.color = '';
-    btn.style.backgroundColor = '';
-    clearTimeout(tipTimer);
-    tip.style.opacity = '0';
+    icon.style.opacity = '0.75';
+    icon.style.color = '';
+    icon.style.backgroundColor = '';
+    clearTimeout(showTimer);
+    removeTip();
   });
   return btn;
 }
