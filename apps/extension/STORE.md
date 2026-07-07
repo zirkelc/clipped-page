@@ -55,16 +55,16 @@ Clip a post on x.com into a self-contained, shareable URL that renders the post 
 
 ## Assets (in `assets/store/` at the repo root)
 
-All produced at exact CWS sizes via `assets/store/shot.mjs` (see its README):
+All produced at exact CWS sizes (see `assets/store/README.md` to regenerate):
 
-- `hero.png` (1280×800) — screenshot: clean post card
-- `quote.png` (1280×800) — screenshot: quoted-post card
-- `image.png` (1280×800) — screenshot: post with images
-- `thread.png` (1280×800) — screenshot: 9-post thread
+- `clip.png` (1280×800) — screenshot: clip button in X's action bar
+- `single.png` (1280×800) — screenshot: a post rendered as a card
+- `formats.png` (1280×800) — screenshot: same link, card + Markdown
+- `thread.png` (1280×800) — screenshot: full thread capture with image
 - `landing.png` (1280×800) — screenshot: how it works
+- `icon-128.png` (128×128) — store icon (copy of `public/icon/128.png`)
 - `tile.png` (440×280) — small promo tile
 - `marquee.png` (1400×560) — marquee promo (featured)
-- Store icon 128×128 ships in the package (`public/icon/128.png`)
 
 ## Submitting (manual — needs your Google login)
 

@@ -1,45 +1,45 @@
 # Store assets
 
-Art for the Chrome Web Store listing, checked into the repo. Regenerate with
-headless Chrome via `shot.mjs`.
+Art for the Chrome Web Store listing, checked into the repo. The five
+screenshots share one layout: a dark 1280×800 canvas with a descriptive header
+above framed content. Regenerate with headless Chrome via the scripts below.
 
 ## Files
 
-| File          | Size      | CWS slot                          |
-| ------------- | --------- | --------------------------------- |
-| `hero.png`    | 1280×800  | Screenshot — clean post card      |
-| `quote.png`   | 1280×800  | Screenshot — quoted-post card     |
-| `image.png`   | 1280×800  | Screenshot — post with images     |
-| `thread.png`  | 1280×800  | Screenshot — 9-post thread        |
-| `landing.png` | 1280×800  | Screenshot — how it works         |
-| `tile.png`    | 440×280   | Small promo tile                  |
-| `marquee.png` | 1400×560  | Marquee promo (featured listings) |
-
-The `128×128` store icon is already in `apps/extension/public/icon/128.png`.
+| File              | Size      | CWS slot                                    |
+| ----------------- | --------- | ------------------------------------------- |
+| `clip.png`        | 1280×800  | Screenshot — clip button in X's action bar  |
+| `single.png`      | 1280×800  | Screenshot — a post rendered as a card      |
+| `formats.png`     | 1280×800  | Screenshot — same link, card + Markdown     |
+| `thread.png`      | 1280×800  | Screenshot — full thread capture with image |
+| `landing.png`     | 1280×800  | Screenshot — how it works                   |
+| `icon-128.png`    | 128×128   | Store icon                                  |
+| `tile.png`        | 440×280   | Small promo tile                            |
+| `marquee.png`     | 1400×560  | Marquee promo (featured listings)           |
 
 ## Regenerate
 
 ```sh
-# Card screenshots (payload -> clipped.page URL -> PNG)
-node shot.mjs card hero.json
-node shot.mjs card quote.json
-node shot.mjs card image.json
+# Single-post + thread cards (live clipped.page renders in the header layout)
+node store-shots.mjs         # -> single.png, thread.png
 
-# Thread screenshot (full clip URL saved in thread.url)
-node shot.mjs urlfile thread.url thread.png
+# Same link, every format (rendered card + ?f=md Markdown)
+node formats-store.mjs       # -> formats.png
 
-# Page screenshots
+# Clip button, cropped from a real X-page screenshot (edit the crop rect / SRC
+# path in the script to point at your own capture)
+node clip-real.mjs           # -> clip.png
+
+# Landing page
 node shot.mjs url "https://clipped.page/" landing.png
 
-# Branded art
+# Branded promo art
 node shot.mjs url "file://$PWD/tile.html"    tile.png    440 280
 node shot.mjs url "file://$PWD/marquee.html" marquee.png 1400 560
 ```
 
-`shot.mjs` reproduces the shared codec (json → gzip → base64url) with Node's
-`zlib` so it can build a real clip URL without a browser, then renders it with
-headless Chrome at an exact pixel size.
-
-The `*.json` files are real posts (Matt Pocock, @mattpocockuk) and `thread.url`
-is a real 9-post thread (Colin McDonnell, @colinhacks), both captured with the
-extension. Swap them to refresh the screenshots.
+`store-shots.mjs` / `formats-store.mjs` iframe the live clipped.page renders of
+`jarred.url` and `thread.url` (a real post and a real thread captured with the
+extension). `shot.mjs` reproduces the shared codec (json → gzip → base64url)
+with Node's `zlib` so it can build a clip URL without a browser. The `128×128`
+store icon is a copy of `apps/extension/public/icon/128.png`.
