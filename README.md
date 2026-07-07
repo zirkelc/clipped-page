@@ -2,8 +2,6 @@
   <img src="assets/store/icon-128.png" width="96" alt="clipped.page" />
 </p>
 
-# clipped.page
-
 Clip an X (Twitter) post into a single self-contained URL. The whole post (author, text, images, video thumbnails, metrics, and any quoted post) is packed into the link's query string, so anyone who opens it gets the post back without an X account, the X API, or any server-side storage.
 
 **The URL is the post.** There is no database, no auth, and nothing is saved anywhere. Decode the link and you have the original content.
