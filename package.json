@@ -2,7 +2,7 @@
   "name": "clipped-page",
   "version": "0.0.0",
   "private": true,
-  "description": "Chrome extension + Cloudflare-hosted site that clips an X post into a self-contained URL.",
+  "description": "Clip any post on x.com into a self-contained, shareable URL that renders anywhere, no account or app required.",
   "scripts": {
     "build": "pnpm -r build",
     "dev": "pnpm -r --parallel dev",

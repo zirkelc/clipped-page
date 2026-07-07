@@ -5,7 +5,7 @@ export default defineConfig({
   entrypointsDir: 'entrypoints',
   manifest: {
     name: 'clipped.page',
-    description: 'Clip any post on x.com as a self-contained URL.',
+    description: 'Clip any post on x.com into a self-contained, shareable URL that renders anywhere, no account or app required.',
     homepage_url: 'https://clipped.page',
     permissions: ['activeTab', 'storage'],
     host_permissions: ['https://x.com/*', 'https://twitter.com/*'],

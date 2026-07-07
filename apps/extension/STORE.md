@@ -29,7 +29,7 @@ The same URL also serves Markdown (`?f=md`) and JSON (`?f=json`) for agents and 
 
 Features:
 - One-click clip button injected on x.com posts
-- Configurable action: open the link, copy it, or both
+- Configurable action: open the link, copy it, both, share it, or copy the post as Markdown
 - Full thread capture
 - No account, no tracking, no data collection
 - Open source
@@ -45,7 +45,7 @@ Clip a post on x.com into a self-contained, shareable URL that renders the post 
 ## Permission justifications
 
 - **activeTab** — read the DOM of the post the user is currently viewing, only when they click the clip button.
-- **storage** — persist the user's clip-button action preference (open / copy / copy+open) via `chrome.storage.sync`.
+- **storage** — persist the user's clip-button action preference (open / copy / copy+open / share / copy-as-Markdown) via `chrome.storage.sync`.
 - **host_permissions (https://x.com/*, https://twitter.com/*)** — inject the clip button into post pages so the user can clip in place.
 
 ## Data usage disclosures
