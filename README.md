@@ -17,14 +17,14 @@ clipped.page inverts that. Instead of pointing at the post, the link *carries* t
 ## How it works
 
 ```
-  Chrome extension                      clipped.page (Cloudflare Worker)
- ┌──────────────────┐                  ┌──────────────────────────────┐
- │ ✂️ on each post   │                  │  parse URL → validate         │
- │  → scrape DOM     │   the link is    │  → render by content type:    │
- │  → build Payload  │   the transport  │     • HTML card (browsers)    │
- │  → gzip + base64  │ ───────────────► │     • JSON   (scripts)  │
+  Chrome extension                       clipped.page (Cloudflare Worker)
+ ┌───────────────────┐                  ┌──────────────────────────────┐
+ │ ✂️ on each post   │                  │  parse URL → validate        │
+ │  → scrape DOM     │   the link is    │  → render by content type:   │
+ │  → build Payload  │   the transport  │     • HTML card (browsers)   │
+ │  → gzip + base64  │ ───────────────► │     • JSON   (scripts)       │
  │  → open URL       │                  │     • Markdown (AIs)         │
- └──────────────────┘                  │     • OG meta (unfurlers)     │
+ └───────────────────┘                  │     • OG meta (unfurlers)    │
                                         └──────────────────────────────┘
 ```
 
