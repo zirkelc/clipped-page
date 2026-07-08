@@ -1,6 +1,11 @@
 import type { ReactNode } from 'react';
 import type { Payload } from '@clipped-page/shared';
 
+/** Canonical origin and social-share image for the site's own pages (landing,
+ * privacy). Clipped-post pages derive their meta from the post instead. */
+const SITE_URL = 'https://clipped.page';
+const OG_IMAGE = `${SITE_URL}/og.png`;
+
 type Meta = {
   title: string;
   description: string;
@@ -92,13 +97,46 @@ if(share)share.addEventListener('click',async()=>{
 });
 })();`;
 
-export function PlainLayout({ title, children }: { title: string; children: ReactNode }) {
+type PlainLayoutProps = {
+  title: string;
+  /** When set, emits the full crawler/social meta set (description, Open Graph,
+   * Twitter Card, canonical). Omit for pages that shouldn't advertise, e.g.
+   * errors. */
+  description?: string;
+  /** Canonical path for the page, e.g. "/" or "/privacy". */
+  path?: string;
+  /** Keep the page out of search indexes (e.g. error pages). */
+  noindex?: boolean;
+  children: ReactNode;
+};
+
+export function PlainLayout({ title, description, path, noindex, children }: PlainLayoutProps) {
+  const canonical = `${SITE_URL}${path ?? '/'}`;
   return (
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{title}</title>
+        {description && <meta name="description" content={description} />}
+        {noindex && <meta name="robots" content="noindex" />}
+        {description && (
+          <>
+            <link rel="canonical" href={canonical} />
+            <meta property="og:type" content="website" />
+            <meta property="og:site_name" content="clipped.page" />
+            <meta property="og:title" content={title} />
+            <meta property="og:description" content={description} />
+            <meta property="og:url" content={canonical} />
+            <meta property="og:image" content={OG_IMAGE} />
+            <meta property="og:image:width" content="1280" />
+            <meta property="og:image:height" content="640" />
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:title" content={title} />
+            <meta name="twitter:description" content={description} />
+            <meta name="twitter:image" content={OG_IMAGE} />
+          </>
+        )}
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="stylesheet" href="/styles.css" />
       </head>

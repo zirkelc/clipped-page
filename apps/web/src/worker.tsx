@@ -13,6 +13,11 @@ type Bindings = {
 
 type Format = 'html' | 'md' | 'json';
 
+const LANDING_DESCRIPTION =
+  'Clip any X post into a self-contained URL. The whole post lives in the link, so anyone can read it with no account, no server, and no app.';
+const PRIVACY_DESCRIPTION =
+  'clipped.page privacy policy. No accounts, no tracking, no data collection. Post data lives in the URL, never on a server.';
+
 function negotiate(req: Request, url: URL): Format {
   /* `f` short alias matches the rest of the wire vocabulary (s, d, v); `format` kept for readability. */
   const explicit = url.searchParams.get('f') ?? url.searchParams.get('format');
@@ -59,7 +64,7 @@ app.get('/', async (c) => {
   if (!url.searchParams.has('d')) {
     if (format === 'html') {
       const { response, bytes } = htmlResponse(
-        <PlainLayout title="clipped.page"><Landing /></PlainLayout>,
+        <PlainLayout title="clipped.page" description={LANDING_DESCRIPTION} path="/"><Landing /></PlainLayout>,
       );
       track(ae, { version: SHARE_URL_VERSION, format: 'landing', status: 200, request: c.req.raw, responseBytes: bytes });
       return response;
@@ -73,7 +78,7 @@ app.get('/', async (c) => {
   if (!parsed.ok) {
     if (format === 'html') {
       const { response, bytes } = htmlResponse(
-        <PlainLayout title="clipped.page · error"><ErrorPage message={parsed.error} /></PlainLayout>,
+        <PlainLayout title="clipped.page · error" noindex><ErrorPage message={parsed.error} /></PlainLayout>,
         400,
       );
       track(ae, { version: SHARE_URL_VERSION, format: 'error', status: 400, request: c.req.raw, responseBytes: bytes });
@@ -118,7 +123,7 @@ app.get('/', async (c) => {
 
 app.get('/privacy', () => {
   const { response } = htmlResponse(
-    <PlainLayout title="clipped.page · privacy"><PrivacyPolicy /></PlainLayout>,
+    <PlainLayout title="clipped.page · privacy" description={PRIVACY_DESCRIPTION} path="/privacy"><PrivacyPolicy /></PlainLayout>,
   );
   return response;
 });
