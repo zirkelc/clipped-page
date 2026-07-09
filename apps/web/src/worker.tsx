@@ -2,7 +2,7 @@ import type { ReactElement } from 'react';
 import { Hono } from 'hono';
 import { renderToString } from 'react-dom/server';
 import { parseShareUrl, toMarkdown, SHARE_URL_VERSION } from '@clipped-page/shared';
-import { Card, ErrorPage, Landing, PrivacyPolicy } from './Card.js';
+import { Card, ErrorPage, Landing, PrivacyPolicy, LegalNotice } from './Card.js';
 import { Layout, PlainLayout, buildMeta, SITE_URL } from './Layout.js';
 import { renderOgImage } from './og.js';
 import { track } from './analytics.js';
@@ -18,6 +18,7 @@ const LANDING_DESCRIPTION =
   'Clip any X post into a self-contained URL. The whole post lives in the link, so anyone can read it with no account, no server, and no app.';
 const PRIVACY_DESCRIPTION =
   'clipped.page privacy policy. No accounts, no tracking, no data collection. Post data lives in the URL, never on a server.';
+const LEGAL_DESCRIPTION = 'Legal notice (Impressum) for clipped.page pursuant to § 5 DDG.';
 
 function negotiate(req: Request, url: URL): Format {
   /* `f` short alias matches the rest of the wire vocabulary (s, d, v); `format` kept for readability. */
@@ -164,6 +165,19 @@ app.get('/privacy', () => {
   );
   return response;
 });
+
+app.get('/legal', () => {
+  /* noindex so the operator's postal address stays out of search results;
+   * social/link-preview bots ignore this and unfurl normally. */
+  const { response } = htmlResponse(
+    <PlainLayout title="clipped.page · Legal notice" description={LEGAL_DESCRIPTION} path="/legal" noindex><LegalNotice /></PlainLayout>,
+  );
+  return response;
+});
+
+/* The German term is what people (and German visitors) may type; keep it as a
+ * permanent alias for the canonical /legal page. */
+app.get('/impressum', (c) => c.redirect('/legal', 301));
 
 app.get('/health', (c) => c.text('ok'));
 
