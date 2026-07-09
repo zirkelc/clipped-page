@@ -3,7 +3,8 @@ import { Hono } from 'hono';
 import { renderToString } from 'react-dom/server';
 import { parseShareUrl, toMarkdown, SHARE_URL_VERSION } from '@clipped-page/shared';
 import { Card, ErrorPage, Landing, PrivacyPolicy } from './Card.js';
-import { Layout, PlainLayout, buildMeta } from './Layout.js';
+import { Layout, PlainLayout, buildMeta, SITE_URL } from './Layout.js';
+import { renderOgImage } from './og.js';
 import { track } from './analytics.js';
 
 type Bindings = {
@@ -106,6 +107,10 @@ app.get('/', async (c) => {
   }
 
   const meta = buildMeta(payload, src);
+  /* Always advertise the branded, generated OG card (mirrors this clip's own
+   * v/s/d params on the /og route). Pinned to the canonical origin so the
+   * absolute image URL is always https and on the apex host. */
+  meta.image = `${SITE_URL}/og${url.search}`;
   const alt = (f: Format) => {
     const u = new URL(c.req.url);
     u.searchParams.set('f', f);
@@ -119,6 +124,38 @@ app.get('/', async (c) => {
   response.headers.set('link', link);
   track(ae, { version: SHARE_URL_VERSION, format: 'html', status: 200, sourceHost, request: c.req.raw, responseBytes: bytes });
   return response;
+});
+
+/* Branded OG card for a clipped post. Same v/s/d params as the clip URL; the
+ * result is deterministic, so it's cached forever keyed on the request URL.
+ * Falls back to the static site banner if the payload is unreadable or the
+ * render fails, so a shared link never unfurls with a broken image. */
+app.get('/og', async (c) => {
+  const url = new URL(c.req.url);
+  const fallback = `${SITE_URL}/og.png`;
+  /* `caches.default` is a Workers extension not present on the DOM CacheStorage type. */
+  const cache = (caches as unknown as { default: Cache }).default;
+
+  const cached = await cache.match(c.req.raw);
+  if (cached) return cached;
+
+  const parsed = await parseShareUrl(url);
+  if (!parsed.ok) return Response.redirect(fallback, 302);
+
+  try {
+    const body = await renderOgImage(parsed.payload, parsed.src).arrayBuffer();
+    const response = new Response(body, {
+      headers: {
+        'content-type': 'image/png',
+        'cache-control': 'public, max-age=31536000, immutable',
+      },
+    });
+    c.executionCtx.waitUntil(cache.put(c.req.raw, response.clone()));
+    return response;
+  } catch (e) {
+    console.error('og render failed:', e);
+    return Response.redirect(fallback, 302);
+  }
 });
 
 app.get('/privacy', () => {

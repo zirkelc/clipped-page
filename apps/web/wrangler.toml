@@ -3,6 +3,9 @@ main = "src/worker.tsx"
 compatibility_date = "2025-01-15"
 compatibility_flags = ["nodejs_compat"]
 
+# Bundle font files as raw bytes so the OG-image renderer can hand them to satori.
+rules = [{ type = "Data", globs = ["**/*.ttf"], fallthrough = true }]
+
 # Custom domain. Requires `clipped.page` to be on this Cloudflare account as a
 # zone — wrangler will create the route + DNS automatically on deploy.
 [[routes]]

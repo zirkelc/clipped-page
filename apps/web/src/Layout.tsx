@@ -3,7 +3,7 @@ import type { Payload } from '@clipped-page/shared';
 
 /** Canonical origin and social-share image for the site's own pages (landing,
  * privacy). Clipped-post pages derive their meta from the post instead. */
-const SITE_URL = 'https://clipped.page';
+export const SITE_URL = 'https://clipped.page';
 const OG_IMAGE = `${SITE_URL}/og.png`;
 
 type Meta = {
@@ -22,12 +22,12 @@ export function buildMeta(payload: Payload, src: string): Meta {
   const threadSuffix = payload.posts.length > 1 ? ` · thread (${payload.posts.length})` : '';
   const title = `${focal.author.name} (@${focal.author.handle})${threadSuffix}`;
   const description = focal.text.length > 200 ? focal.text.slice(0, 197) + '...' : focal.text;
-  const image = focal.images?.[0];
   let siteName = 'clipped.page';
   try { siteName = new URL(srcUrl).hostname; } catch {}
   const creator = `@${focal.author.handle}`;
   const publishedTime = focal.timestamp;
-  return { title, description, url: srcUrl, image, siteName, creator, publishedTime };
+  /* image is set by the caller to the generated /og card URL. */
+  return { title, description, url: srcUrl, siteName, creator, publishedTime };
 }
 
 type LayoutProps = {
