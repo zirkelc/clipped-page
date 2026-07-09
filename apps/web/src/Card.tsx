@@ -239,8 +239,8 @@ export function Card({ payload, src, currentUrl }: Props) {
   const { title: shareTitle, text: shareText } = buildShareFields(payload);
 
   return (
-    <main className="min-h-screen flex items-start justify-center p-6 font-mono">
-      <div className="w-full max-w-[720px] flex flex-col gap-3 my-8">
+    <main className="min-h-screen flex justify-center p-6 font-mono">
+      <div className="w-full max-w-[720px] flex flex-col gap-3 my-auto">
         {multi && (
           <div className="text-xs uppercase tracking-wider opacity-70 flex justify-between">
             <span>Thread · {payload.posts.length} posts{payload.truncated && ' (truncated)'}</span>
@@ -305,8 +305,8 @@ const EXAMPLES: Array<{ label: string; url: string }> = [
 
 export function Landing() {
   return (
-    <main className="min-h-screen flex items-center justify-center p-6 font-mono">
-      <article className="w-full max-w-[720px] p-8 leading-relaxed" style={{ border: '4px double currentColor' }}>
+    <main className="min-h-screen flex justify-center p-6 font-mono">
+      <article className="w-full max-w-[720px] p-8 leading-relaxed my-auto" style={{ border: '4px double currentColor' }}>
         <header>
           <LogoMark size={40} className="mb-3" />
           <h1 className="text-2xl mb-1">clipped<span className="opacity-50">.page</span></h1>
@@ -402,8 +402,8 @@ export function Landing() {
 
 export function ErrorPage({ message }: { message: string }) {
   return (
-    <main className="min-h-screen flex items-center justify-center p-6 font-mono">
-      <article className="w-full max-w-[720px] p-8" style={{ border: '4px double currentColor' }}>
+    <main className="min-h-screen flex justify-center p-6 font-mono">
+      <article className="w-full max-w-[720px] p-8 my-auto" style={{ border: '4px double currentColor' }}>
         <h1 className="text-xl mb-2">clipped.page · error</h1>
         <p className="opacity-80">{message}</p>
       </article>
@@ -419,8 +419,8 @@ export function PrivacyPolicy() {
     </section>
   );
   return (
-    <main className="min-h-screen flex items-start justify-center p-6 font-mono">
-      <article className="w-full max-w-[720px] p-8 leading-relaxed my-8" style={{ border: '4px double currentColor' }}>
+    <main className="min-h-screen flex justify-center p-6 font-mono">
+      <article className="w-full max-w-[720px] p-8 leading-relaxed my-auto" style={{ border: '4px double currentColor' }}>
         <header>
           <h1 className="text-2xl mb-1">Privacy Policy</h1>
           <p className="opacity-60 text-sm">clipped.page browser extension · last updated July 2, 2026</p>
@@ -512,8 +512,8 @@ export function LegalNotice() {
   );
 
   return (
-    <main className="min-h-screen flex items-start justify-center p-6 font-mono">
-      <article className="w-full max-w-[720px] p-8 leading-relaxed my-8" style={{ border: '4px double currentColor' }}>
+    <main className="min-h-screen flex justify-center p-6 font-mono">
+      <article className="w-full max-w-[720px] p-8 leading-relaxed my-auto" style={{ border: '4px double currentColor' }}>
         <header>
           <h1 className="text-2xl mb-1">Legal notice</h1>
           <p className="opacity-60 text-sm">Impressum · pursuant to § 5 DDG</p>
