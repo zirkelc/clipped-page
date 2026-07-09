@@ -386,6 +386,10 @@ export function Landing() {
               privacy
             </a>
             <span className="opacity-40">·</span>
+            <a href="/legal" className="underline decoration-dotted hover:opacity-100">
+              legal notice
+            </a>
+            <span className="opacity-40">·</span>
             <a href="https://github.com/zirkelc/clipped-page" className="underline decoration-dotted hover:opacity-100">
               source →
             </a>
@@ -480,6 +484,81 @@ export function PrivacyPolicy() {
               github.com/zirkelc/clipped-page
             </a>
             .
+          </p>
+        </Section>
+      </article>
+    </main>
+  );
+}
+
+export function LegalNotice() {
+  /* Fill these in with your real details before this page goes live. A legal
+   * notice with placeholder or missing data is worse than none. A physical,
+   * contactable postal address is mandatory (§ 5 DDG); email or a P.O. box
+   * alone does not satisfy it. */
+  const name = 'Christian Cook';
+  const addressLine1 = 'Hauptstr. 69c';
+  const addressLine2 = '68259 Mannheim';
+  const country = 'Germany';
+  const email = 'chris@zirkelc.dev';
+  const phone = ''; // optional; email already provides a fast-contact channel
+  const vatId = ''; // USt-IdNr., only if you actually have one
+
+  const Section = ({ title, children }: { title: string; children: ReactNode }) => (
+    <section className="mt-6">
+      <h2 className="text-xs uppercase tracking-widest opacity-60 mb-2">{title}</h2>
+      <div className="opacity-80 text-sm leading-relaxed space-y-2">{children}</div>
+    </section>
+  );
+
+  return (
+    <main className="min-h-screen flex items-start justify-center p-6 font-mono">
+      <article className="w-full max-w-[720px] p-8 leading-relaxed my-8" style={{ border: '4px double currentColor' }}>
+        <header>
+          <h1 className="text-2xl mb-1">Legal notice</h1>
+          <p className="opacity-60 text-sm">Impressum · pursuant to § 5 DDG</p>
+        </header>
+
+        <Section title="Provider (§ 5 DDG)">
+          <p>
+            {name}
+            <br />
+            {addressLine1}
+            <br />
+            {addressLine2}
+            <br />
+            {country}
+          </p>
+        </Section>
+
+        <Section title="Contact">
+          <p>
+            Email:{' '}
+            <a href={`mailto:${email}`} className="underline decoration-dotted hover:opacity-100">
+              {email}
+            </a>
+            {phone && (
+              <>
+                <br />
+                Phone: {phone}
+              </>
+            )}
+          </p>
+        </Section>
+
+        {vatId && (
+          <Section title="VAT ID">
+            <p>VAT identification number pursuant to § 27a UStG: {vatId}</p>
+          </Section>
+        )}
+
+        <Section title="Responsible for content (§ 18 (2) MStV)">
+          <p>
+            {name}
+            <br />
+            {addressLine1}
+            <br />
+            {addressLine2}
           </p>
         </Section>
       </article>
