@@ -133,15 +133,29 @@ app.get('/', async (c) => {
  * render fails, so a shared link never unfurls with a broken image. */
 app.get('/og', async (c) => {
   const url = new URL(c.req.url);
+  const ae = c.env.ANALYTICS;
   const fallback = `${SITE_URL}/og.png`;
+  /* Derive the source host from the `s` param up front so cache hits (which skip
+   * the full parse) still record which post is being unfurled. */
+  let sourceHost = '';
+  const s = url.searchParams.get('s');
+  if (s) {
+    try { sourceHost = new URL(s.startsWith('http') ? s : `https://${s}`).hostname; } catch { /* ignore */ }
+  }
   /* `caches.default` is a Workers extension not present on the DOM CacheStorage type. */
   const cache = (caches as unknown as { default: Cache }).default;
 
   const cached = await cache.match(c.req.raw);
-  if (cached) return cached;
+  if (cached) {
+    track(ae, { version: SHARE_URL_VERSION, format: 'og', status: 200, sourceHost, request: c.req.raw });
+    return cached;
+  }
 
   const parsed = await parseShareUrl(url);
-  if (!parsed.ok) return Response.redirect(fallback, 302);
+  if (!parsed.ok) {
+    track(ae, { version: SHARE_URL_VERSION, format: 'og', status: 302, sourceHost, request: c.req.raw });
+    return Response.redirect(fallback, 302);
+  }
 
   try {
     const body = await renderOgImage(parsed.payload, parsed.src).arrayBuffer();
@@ -152,9 +166,11 @@ app.get('/og', async (c) => {
       },
     });
     c.executionCtx.waitUntil(cache.put(c.req.raw, response.clone()));
+    track(ae, { version: SHARE_URL_VERSION, format: 'og', status: 200, sourceHost, request: c.req.raw, responseBytes: body.byteLength });
     return response;
   } catch (e) {
     console.error('og render failed:', e);
+    track(ae, { version: SHARE_URL_VERSION, format: 'og', status: 500, sourceHost, request: c.req.raw });
     return Response.redirect(fallback, 302);
   }
 });

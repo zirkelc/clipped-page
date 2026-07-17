@@ -4,7 +4,7 @@
  * Schema (positional, fixed once recorded — adding new fields is fine,
  * reordering breaks past queries):
  *   indexes[0]  = version          (sampling key — events with the same index sample together)
- *   blobs[0]    = format           ("html" | "md" | "json" | "landing" | "error")
+ *   blobs[0]    = format           ("html" | "md" | "json" | "landing" | "error" | "og")
  *   blobs[1]    = status           (HTTP status as string)
  *   blobs[2]    = sourceHost       (hostname of `src`, e.g. "x.com"; empty for landing/error)
  *   blobs[3]    = userAgentKind    ("bot" | "browser" | "cli" | "unknown")
@@ -18,7 +18,7 @@ type Ae = AnalyticsEngineDataset | undefined;
 
 type TrackArgs = {
   version: string;
-  format: 'html' | 'md' | 'json' | 'landing' | 'error';
+  format: 'html' | 'md' | 'json' | 'landing' | 'error' | 'og';
   status: number;
   sourceHost?: string;
   request: Request;
