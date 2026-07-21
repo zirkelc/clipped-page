@@ -58,6 +58,33 @@ function htmlResponse(node: ReactElement, status = 200): { response: Response; b
 
 const app = new Hono<{ Bindings: Bindings }>();
 
+const CANONICAL_HOST = 'clipped.page';
+
+/* Collapse the www and http variants onto https://clipped.page with a 301 so
+ * every page has a single canonical URL (Google was flagging the variants as
+ * duplicates). Gated on the CF-Visitor header, which Cloudflare sets on all
+ * real edge traffic but wrangler dev does not, so local dev is left alone. The
+ * original scheme comes from CF-Visitor because the request URL's protocol
+ * isn't reliable behind Cloudflare's TLS termination. */
+app.use('*', async (c, next) => {
+  const visitor = c.req.header('cf-visitor');
+  if (!visitor) return next();
+  const url = new URL(c.req.url);
+  if (url.hostname !== CANONICAL_HOST && url.hostname !== `www.${CANONICAL_HOST}`) {
+    return next();
+  }
+  let scheme = url.protocol.replace(':', '');
+  try {
+    scheme = JSON.parse(visitor).scheme ?? scheme;
+  } catch {
+    /* keep the URL's scheme */
+  }
+  if (url.hostname !== CANONICAL_HOST || scheme !== 'https') {
+    return c.redirect(`https://${CANONICAL_HOST}${url.pathname}${url.search}`, 301);
+  }
+  return next();
+});
+
 app.get('/', async (c) => {
   const url = new URL(c.req.url);
   const format = negotiate(c.req.raw, url);
